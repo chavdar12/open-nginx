@@ -102,3 +102,8 @@ The files in `src/main/resources/nginx/` are generated; edit the generators in `
 Directive data and documentation come from the nginx documentation and source code (© Igor Sysoev, Nginx, Inc.,
 BSD-2-Clause) and from the READMEs of the supported third-party modules (BSD-licensed). The test corpus is taken from
 nginx-tests (BSD-2-Clause). Security checks are modeled on [gixy](https://github.com/yandex/gixy).
+
+## License
+
+[Apache License 2.0](LICENSE), © 2026 Chavdar Shishkov. The generated nginx data keeps its upstream BSD-2-Clause terms,
+noted at the top of each data file.
