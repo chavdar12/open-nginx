@@ -51,7 +51,7 @@ class NginxCrossFileTest : BasePlatformTestCase() {
         myFixture.editor.caretModel.moveToOffset(myFixture.editor.document.textLength)
         val items = myFixture.completeBasic()?.map { it.lookupString }
         // "listen" is valid in server; "list" alone would auto-complete to it, so look at the list instead
-        assertTrue(items == null && myFixture.editor.document.text.endsWith("listen") || items!!.contains("listen"))
+        assertTrue((items == null && myFixture.editor.document.text.endsWith("listen")) || items!!.contains("listen"))
     }
 
     fun testCompletionFromOtherFiles() {

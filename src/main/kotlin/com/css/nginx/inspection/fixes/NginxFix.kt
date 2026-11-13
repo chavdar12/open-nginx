@@ -25,7 +25,7 @@ class NginxFix(private val name: String, element: PsiElement, private val edit: 
         docs.doPostponedOperationsAndUnblockDocument(doc)
         edit(e, doc)
         docs.commitDocument(doc)
-        DaemonCodeAnalyzer.getInstance(project).restart(file)
+        DaemonCodeAnalyzer.getInstance(project).restart(file, "nginx quick fix: $name")
     }
 
     companion object {
