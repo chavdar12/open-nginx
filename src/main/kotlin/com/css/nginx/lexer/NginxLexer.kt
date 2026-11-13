@@ -46,7 +46,8 @@ class NginxLexer : LexerBase() {
         val tokenStart = i == 0 || buf[i - 1].isWhitespace() || buf[i - 1] in ";{}"
         type = when {
             c.isWhitespace() -> {
-                while (i < end && buf[i].isWhitespace()) i++; TokenType.WHITE_SPACE
+                while (i < end && buf[i].isWhitespace()) i++
+                TokenType.WHITE_SPACE
             }
 
             state == 3 && c != '}' -> {
@@ -56,7 +57,8 @@ class NginxLexer : LexerBase() {
             }
 
             c == '#' && tokenStart -> {
-                while (i < end && buf[i] != '\n') i++; NginxTypes.COMMENT
+                while (i < end && buf[i] != '\n') i++
+                NginxTypes.COMMENT
             }
 
             c == ';' || c == '{' || c == '}' -> {
@@ -76,8 +78,11 @@ class NginxLexer : LexerBase() {
             isVarStart(i) -> {
                 i++
                 if (buf[i] == '{') {
-                    while (i < end && buf[i] != '}') i++; if (i < end) i++
-                } else while (i < end && (buf[i] == '_' || buf[i].isLetterOrDigit())) i++
+                    while (i < end && buf[i] != '}') i++
+                    if (i < end) i++
+                } else {
+                    while (i < end && (buf[i] == '_' || buf[i].isLetterOrDigit())) i++
+                }
                 state = if (state == 2) 2 else 1; NginxTypes.VARIABLE
             }
 
