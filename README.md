@@ -106,4 +106,4 @@ nginx-tests (BSD-2-Clause). Security checks are modeled on [gixy](https://github
 ## License
 
 [Apache License 2.0](LICENSE), © 2026 Chavdar Shishkov. The generated nginx data keeps its upstream BSD-2-Clause terms,
-noted at the top of each data file.
+noted at the top of each generated file.
