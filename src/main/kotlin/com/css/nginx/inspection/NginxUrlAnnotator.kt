@@ -1,8 +1,8 @@
 package com.css.nginx.inspection
 
 import com.css.nginx.inspection.fixes.NginxFix
-import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxDeclarations
+import com.css.nginx.psi.NginxDirective
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
@@ -26,15 +26,27 @@ class NginxUrlAnnotator : Annotator {
         if (sep < 0) {
             // grpc_pass, uwsgi_pass and stream's proxy_pass take a bare address; http's proxy_pass needs a scheme
             if (d.directiveName == "proxy_pass" && ancestors(d).any { it == "location" || it == "http" }) {
-                holder.problem(HighlightSeverity.ERROR, "Invalid URL prefix in '$url', expected http:// or https://").range(range)
-                    .withFix(NginxFix("Add http://", arg.first()) { e, doc -> doc.insertString(e.textRange.startOffset, "http://") }).create()
+                holder.problem(HighlightSeverity.ERROR, "Invalid URL prefix in '$url', expected http:// or https://")
+                    .range(range)
+                    .withFix(NginxFix("Add http://", arg.first()) { e, doc ->
+                        doc.insertString(
+                            e.textRange.startOffset,
+                            "http://"
+                        )
+                    }).create()
             } else {
                 checkUpstream(d, url, range, holder)
             }
             return
         }
         val scheme = url.substring(0, sep)
-        if (scheme.lowercase() !in schemes) return error("Invalid URL scheme '$scheme://', expected ${schemes.joinToString(" or ") { "$it://" }}")
+        if (scheme.lowercase() !in schemes) return error(
+            "Invalid URL scheme '$scheme://', expected ${
+                schemes.joinToString(
+                    " or "
+                ) { "$it://" }
+            }"
+        )
         val rest = url.substring(sep + 3)
         if (rest.startsWith("unix:")) return  // socket path: no host or port to check
         val hostPort = rest.substringBefore('/')
@@ -59,7 +71,10 @@ class NginxUrlAnnotator : Annotator {
         if (!PLAIN_NAME.matches(host) || host == "localhost" || host.all { it.isDigit() }) return
         val upstreams = NginxDeclarations.declarations(d.containingFile) ?: return
         if (host !in upstreams) {
-            holder.problem(HighlightSeverity.WEAK_WARNING, "Unknown upstream '$host': no upstream block with this name, so nginx will resolve '$host' as a host name")
+            holder.problem(
+                HighlightSeverity.WEAK_WARNING,
+                "Unknown upstream '$host': no upstream block with this name, so nginx will resolve '$host' as a host name"
+            )
                 .range(range).create()
         }
     }
@@ -74,7 +89,12 @@ class NginxUrlAnnotator : Annotator {
     }
 
     private fun ancestors(d: NginxDirective) =
-        generateSequence(PsiTreeUtil.getParentOfType(d, NginxDirective::class.java)) { PsiTreeUtil.getParentOfType(it, NginxDirective::class.java) }
+        generateSequence(PsiTreeUtil.getParentOfType(d, NginxDirective::class.java)) {
+            PsiTreeUtil.getParentOfType(
+                it,
+                NginxDirective::class.java
+            )
+        }
             .map { it.directiveName }
 
 }

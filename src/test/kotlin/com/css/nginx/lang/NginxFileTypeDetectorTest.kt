@@ -1,7 +1,7 @@
 package com.css.nginx.lang
 
-import com.intellij.openapi.application.WriteAction
 import com.css.nginx.psi.NginxTypes
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.psi.PsiManager
@@ -12,7 +12,10 @@ class NginxFileTypeDetectorTest : BasePlatformTestCase() {
     fun testNginxContentInAnyFileIsDetected() {
         val conf = "# my site\nserver {\n    listen 80;\n    log_format main '\$a'\n                    '\$b';\n}\n"
         assertEquals(NginxFileType, myFixture.configureByText("test.conf", conf).virtualFile.fileType)
-        assertEquals(NginxFileType, myFixture.configureByText("default", "location / {\n    return 204;\n}\n").virtualFile.fileType)
+        assertEquals(
+            NginxFileType,
+            myFixture.configureByText("default", "location / {\n    return 204;\n}\n").virtualFile.fileType
+        )
     }
 
     fun testOtherConfigFormatsAreLeftAlone() {
@@ -54,7 +57,12 @@ class NginxFileTypeDetectorTest : BasePlatformTestCase() {
     fun testTypingIntoNginxConfNeverRefreshes() {
         // nginx.conf is nginx by name: keystrokes must not drop and rebuild its PSI
         val psi = myFixture.configureByText("nginx.conf", "")
-        for (c in "events {}\n") WriteCommandAction.runWriteCommandAction(project) { myFixture.editor.document.insertString(myFixture.editor.document.textLength, c.toString()) }
+        for (c in "events {}\n") WriteCommandAction.runWriteCommandAction(project) {
+            myFixture.editor.document.insertString(
+                myFixture.editor.document.textLength,
+                c.toString()
+            )
+        }
         Thread.sleep(500)  // longer than the 300 ms debounce
         PlatformTestUtil.dispatchAllInvocationEventsInIdeEventQueue()
         assertTrue(psi.isValid)

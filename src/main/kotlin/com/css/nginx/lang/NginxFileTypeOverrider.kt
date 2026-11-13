@@ -41,7 +41,7 @@ fun isNginx(file: VirtualFile): Boolean {
     file.getUserData(SNIFFED)?.let { if (it.first == stamp) return it.second }
     val verdict = try {
         val text = doc?.charsSequence?.let { it.subSequence(0, minOf(it.length, 4096)) }
-            // not file.charset: that asks for the file type and recurses back here; nginx configs are ASCII/UTF-8
+        // not file.charset: that asks for the file type and recurses back here; nginx configs are ASCII/UTF-8
             ?: String(file.inputStream.use { it.readNBytes(4096) }, Charsets.UTF_8)
         looksLikeNginx(text)
     } catch (_: IOException) {
@@ -55,7 +55,13 @@ fun isNginx(file: VirtualFile): Boolean {
 class NginxConfTypeRefresher : DocumentListener {
     // debounce: keystrokes only queue a re-check per file; it runs once typing pauses for 300 ms
     private val queue = MergingUpdateQueue(
-        "nginx file type refresh", 300, true, null, ApplicationManager.getApplication(), null, Alarm.ThreadToUse.SWING_THREAD,
+        "nginx file type refresh",
+        300,
+        true,
+        null,
+        ApplicationManager.getApplication(),
+        null,
+        Alarm.ThreadToUse.SWING_THREAD,
     )
 
     override fun documentChanged(event: DocumentEvent) {
@@ -72,14 +78,16 @@ class NginxConfTypeRefresher : DocumentListener {
         val now = isNginx(file)
         // the file's PSI is what highlighting and checks use; the type lookup alone may already be up to date
         val stalePsi = ProjectManager.getInstance().openProjects.any { project ->
-            PsiDocumentManager.getInstance(project).getCachedPsiFile(document)?.let { (it.language == NginxLanguage) != now } == true
+            PsiDocumentManager.getInstance(project).getCachedPsiFile(document)
+                ?.let { (it.language == NginxLanguage) != now } == true
         }
         if (!stalePsi && (before == null || before == now)) return
         // what "Override File Type" does: drops the cached type and PSI for the file
         FileContentUtilCore.reparseFiles(file)
         // open editors keep the highlighter they were created with, so recolor them explicitly
         for (editor in EditorFactory.getInstance().getEditors(document)) {
-            (editor as? EditorEx)?.highlighter = EditorHighlighterFactory.getInstance().createEditorHighlighter(editor.project, file)
+            (editor as? EditorEx)?.highlighter =
+                EditorHighlighterFactory.getInstance().createEditorHighlighter(editor.project, file)
         }
     }
 }

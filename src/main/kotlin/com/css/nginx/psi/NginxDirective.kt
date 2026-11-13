@@ -12,7 +12,13 @@ class NginxDirective(node: ASTNode) : ASTWrapperPsiElement(node), PsiNameIdentif
     val nameElement: PsiElement get() = firstChild
     val directiveName: String get() = firstChild.text
     val block: PsiElement? get() = node.findChildByType(NginxTypes.BLOCK)?.psi
-    val directives: List<NginxDirective> get() = block?.let { PsiTreeUtil.getChildrenOfTypeAsList(it, NginxDirective::class.java) }.orEmpty()
+    val directives: List<NginxDirective>
+        get() = block?.let {
+            PsiTreeUtil.getChildrenOfTypeAsList(
+                it,
+                NginxDirective::class.java
+            )
+        }.orEmpty()
 
     /** Arguments as nginx sees them: tokens with no whitespace between them (/path/$uri) form one argument. */
     val args: List<List<PsiElement>>
@@ -45,7 +51,8 @@ class NginxDirective(node: ASTNode) : ASTWrapperPsiElement(node), PsiNameIdentif
     override fun getName(): String? = declaredKey?.removePrefix("$")
 
     override fun setName(name: String): PsiElement {
-        val id = nameIdentifier ?: throw IncorrectOperationException("Only upstreams, variables and named locations can be renamed")
+        val id = nameIdentifier
+            ?: throw IncorrectOperationException("Only upstreams, variables and named locations can be renamed")
         val text = if (id.node.elementType == NginxTypes.VARIABLE) "$" + name.removePrefix("$") else name
         id.replace(nginxToken(this, text))
         return this

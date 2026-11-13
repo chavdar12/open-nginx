@@ -15,7 +15,8 @@ import com.intellij.psi.util.PsiTreeUtil
  * instead. Rename the new file with Shift+F6 afterwards; the include follows.
  */
 class NginxExtractIncludeIntention : NginxIntention("Extract to include file") {
-    override fun target(at: NginxDirective, editor: Editor): NginxDirective? = at.takeIf { it.containingFile.virtualFile?.parent != null }
+    override fun target(at: NginxDirective, editor: Editor): NginxDirective? =
+        at.takeIf { it.containingFile.virtualFile?.parent != null }
 
     // creates a file: nothing meaningful to show in a preview
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
@@ -25,18 +26,28 @@ class NginxExtractIncludeIntention : NginxIntention("Extract to include file") {
         val sel = editor.selectionModel
         // the caret sits at one end of a selection, often after it; the selection's first directive decides the block
         val first = if (!sel.hasSelection()) null else {
-            val offset = (sel.selectionStart until sel.selectionEnd).firstOrNull { !doc.charsSequence[it].isWhitespace() }
-            offset?.let { PsiTreeUtil.getParentOfType(at.containingFile.findElementAt(it), NginxDirective::class.java, false) }
+            val offset =
+                (sel.selectionStart until sel.selectionEnd).firstOrNull { !doc.charsSequence[it].isWhitespace() }
+            offset?.let {
+                PsiTreeUtil.getParentOfType(
+                    at.containingFile.findElementAt(it),
+                    NginxDirective::class.java,
+                    false
+                )
+            }
         }
         val d = first ?: at
         // with a selection: every directive of d's block that the selection touches
         val siblings = PsiTreeUtil.getChildrenOfTypeAsList(d.parent, NginxDirective::class.java)
-        val picked = if (sel.hasSelection()) siblings.filter { it.textRange.intersects(sel.selectionStart, sel.selectionEnd) }.ifEmpty { listOf(d) } else listOf(d)
+        val picked =
+            if (sel.hasSelection()) siblings.filter { it.textRange.intersects(sel.selectionStart, sel.selectionEnd) }
+                .ifEmpty { listOf(d) } else listOf(d)
         val start = picked.first().textRange.startOffset
         val end = picked.last().textRange.endOffset
         val dir = d.containingFile.virtualFile.parent
         val stem = picked.first().directiveName
-        val name = generateSequence(1) { it + 1 }.map { if (it == 1) "$stem.conf" else "$stem-$it.conf" }.first { dir.findChild(it) == null }
+        val name = generateSequence(1) { it + 1 }.map { if (it == 1) "$stem.conf" else "$stem-$it.conf" }
+            .first { dir.findChild(it) == null }
         val lines = doc.charsSequence.subSequence(start, end).toString().lines()
         val common = lines.drop(1).filter { it.isNotBlank() }.minOfOrNull { it.length - it.trimStart().length } ?: 0
         val file = dir.createChildData(this, name)

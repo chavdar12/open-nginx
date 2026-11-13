@@ -11,7 +11,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPointerManager
 
 /** An Alt+Enter fix that edits the document around [element]; the element is re-found at invoke time, so stale fixes do nothing. */
-class NginxFix(private val name: String, element: PsiElement, private val edit: (PsiElement, Document) -> Unit) : BaseIntentionAction() {
+class NginxFix(private val name: String, element: PsiElement, private val edit: (PsiElement, Document) -> Unit) :
+    BaseIntentionAction() {
     private val pointer = SmartPointerManager.createPointer(element)
 
     override fun getText() = name
@@ -30,7 +31,13 @@ class NginxFix(private val name: String, element: PsiElement, private val edit: 
 
     companion object {
         fun replace(name: String, element: PsiElement, text: String) =
-            NginxFix(name, element) { e, doc -> doc.replaceString(e.textRange.startOffset, e.textRange.endOffset, text) }
+            NginxFix(name, element) { e, doc ->
+                doc.replaceString(
+                    e.textRange.startOffset,
+                    e.textRange.endOffset,
+                    text
+                )
+            }
 
         /** Deletes [e]'s text, and its whole line when nothing else is on it. */
         fun deleteLine(e: PsiElement, doc: Document) {
@@ -46,7 +53,8 @@ class NginxFix(private val name: String, element: PsiElement, private val edit: 
 
         fun indentOf(e: PsiElement, doc: Document): String {
             val start = e.textRange.startOffset
-            return doc.charsSequence.subSequence(doc.getLineStartOffset(doc.getLineNumber(start)), start).takeWhile { it == ' ' || it == '\t' }.toString()
+            return doc.charsSequence.subSequence(doc.getLineStartOffset(doc.getLineNumber(start)), start)
+                .takeWhile { it == ' ' || it == '\t' }.toString()
         }
     }
 }

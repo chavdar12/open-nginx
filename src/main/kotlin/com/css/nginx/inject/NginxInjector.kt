@@ -30,7 +30,8 @@ class NginxInjector : MultiHostInjector {
 
     private fun inject(registrar: MultiHostRegistrar, host: NginxHostLeaf, range: TextRange) {
         // via the .lua file type: Lua plugins create their Language lazily, so findLanguageByID("Lua") is null until a .lua file is used
-        val language = (FileTypeManager.getInstance().getFileTypeByExtension("lua") as? LanguageFileType)?.language ?: return
+        val language =
+            (FileTypeManager.getInstance().getFileTypeByExtension("lua") as? LanguageFileType)?.language ?: return
         registrar.startInjecting(language).addPlace(null, null, host as PsiLanguageInjectionHost, range).doneInjecting()
     }
 }

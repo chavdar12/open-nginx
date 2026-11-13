@@ -23,6 +23,7 @@ class NginxFindUsagesProvider : FindUsagesProvider {
         '@' -> "named location"
         else -> "upstream"
     }
+
     override fun getDescriptiveName(element: PsiElement) = (element as NginxDirective).declaredKey.orEmpty()
     override fun getNodeText(element: PsiElement, useFullName: Boolean) = getDescriptiveName(element)
 }

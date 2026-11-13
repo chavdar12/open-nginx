@@ -62,7 +62,11 @@ abstract class NginxCorpusTestCase : BasePlatformTestCase() {
                     } -> ${b.subList(maxOf(0, i - 3), minOf(b.size, i + 3))}"
                 }
 
-                reformat(once) != once -> "${f.name}: formatting is not idempotent:\n" + firstDifference(once, reformat(once))
+                reformat(once) != once -> "${f.name}: formatting is not idempotent:\n" + firstDifference(
+                    once,
+                    reformat(once)
+                )
+
                 else -> null
             }
         }

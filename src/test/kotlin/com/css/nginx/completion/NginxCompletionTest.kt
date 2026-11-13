@@ -43,7 +43,8 @@ class NginxCompletionTest : BasePlatformTestCase() {
     fun testDirectiveLookupShowsModuleAndObsolete() {
         myFixture.configureByText("nginx.conf", "http { <caret> }")
         myFixture.completeBasic()
-        fun look(name: String) = LookupElementPresentation.renderElement(myFixture.lookupElements!!.first { it.lookupString == name })
+        fun look(name: String) =
+            LookupElementPresentation.renderElement(myFixture.lookupElements!!.first { it.lookupString == name })
         assertEquals("http_gzip", look("gzip_comp_level").typeText)
         assertEquals("headers-more", look("more_set_headers").typeText)
         assertTrue(look("ssl").isStrikeout)  // obsolete since 1.25.1
@@ -51,8 +52,10 @@ class NginxCompletionTest : BasePlatformTestCase() {
     }
 
     fun testProblemTooltipFormatsNames() {
-        assertEquals("<html><b>Security</b>: <code>X-A</code> isn&#39;t &lt;sent&gt; from <code>server</code></html>",
-            problemTooltip("Security: 'X-A' isn't <sent> from 'server'"))
+        assertEquals(
+            "<html><b>Security</b>: <code>X-A</code> isn&#39;t &lt;sent&gt; from <code>server</code></html>",
+            problemTooltip("Security: 'X-A' isn't <sent> from 'server'")
+        )
     }
 
 }
