@@ -142,7 +142,7 @@ class NginxCompletionContributor : CompletionContributor() {
             base,
             { !it.name.startsWith(".") && it.name != "node_modules" }) { f: VirtualFile ->
             if (f != base && (!dirsOnly || f.isDirectory)) {
-                val rel = VfsUtilCore.getRelativePath(f, base)!!
+                val rel = VfsUtilCore.getRelativePath(f, base) ?: return@iterateChildrenRecursively true
                 result.addElement(
                     LookupElementBuilder.create(rel)
                         .withIcon(if (f.isDirectory) AllIcons.Nodes.Folder else AllIcons.FileTypes.Any_type)

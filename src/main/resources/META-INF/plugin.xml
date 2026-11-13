@@ -62,6 +62,7 @@
         <lang.commenter language="Nginx" implementationClass="com.css.nginx.editor.NginxCommenter"/>
         <lang.elementManipulator forClass="com.css.nginx.psi.NginxDirective"
                                  implementationClass="com.css.nginx.psi.NginxDirectiveManipulator"/>
+        <lang.namesValidator language="Nginx" implementationClass="com.css.nginx.navigation.NginxNamesValidator"/>
         <lang.refactoringSupport language="Nginx"
                                  implementationClass="com.css.nginx.navigation.NginxRefactoringSupport"/>
         <lang.findUsagesProvider language="Nginx"
