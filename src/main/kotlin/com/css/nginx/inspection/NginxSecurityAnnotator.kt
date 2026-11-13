@@ -1,5 +1,11 @@
 package com.css.nginx.inspection
 
+import com.css.nginx.NginxConstants.DECODED_URI_VARIABLE
+import com.css.nginx.NginxConstants.NESTED_QUANTIFIER
+import com.css.nginx.NginxConstants.REDIRECT_CODES
+import com.css.nginx.NginxConstants.USER_CONTROLLED_VARIABLE
+import com.css.nginx.NginxConstants.WEAK_CIPHER
+import com.css.nginx.NginxConstants.WEAK_PROTOCOLS
 import com.css.nginx.inspection.fixes.NginxFix
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxRegex
@@ -83,7 +89,7 @@ class NginxSecurityAnnotator : Annotator {
                 splitting(d, args, 1, ::warn)
             }
             // only redirects put the value into a header (Location); return 200 "..." is a body
-            "return" -> if (args.size == 1 || args[0] in REDIRECTS) splitting(d, args, args.lastIndex, ::warn)
+            "return" -> if (args.size == 1 || args[0] in REDIRECT_CODES) splitting(d, args, args.lastIndex, ::warn)
             "if" -> {
                 val i = args.indexOfFirst { it == "~" || it == "~*" }
                 if (i > 0 && (args[i - 1].endsWith("\$http_origin") || args[i - 1].endsWith("\$http_referer")))
@@ -102,7 +108,7 @@ class NginxSecurityAnnotator : Annotator {
 
             "proxy_pass", "grpc_pass", "fastcgi_pass", "uwsgi_pass", "scgi_pass" -> {
                 val host = args.firstOrNull()?.substringAfter("://")?.substringBefore('/') ?: return
-                USER_CONTROLLED.find(host)
+                USER_CONTROLLED_VARIABLE.find(host)
                     ?.let { warn("SSRF: the client controls '${it.value}', so it decides where nginx connects", 0) }
             }
 
@@ -161,7 +167,7 @@ class NginxSecurityAnnotator : Annotator {
         warn: (String, Int?, HighlightSeverity) -> Unit
     ) {
         val v = args.getOrNull(i) ?: return
-        DECODED.find(v)?.let {
+        DECODED_URI_VARIABLE.find(v)?.let {
             warn(
                 "HTTP splitting: ${it.value} is URL-decoded and can carry a line break into the response; use \$request_uri",
                 i,
@@ -179,12 +185,3 @@ class NginxSecurityAnnotator : Annotator {
         else -> null
     }
 }
-
-// (a+)+ (\w+\s?)* (.*)*: a group with + or * inside, itself followed by + * or {n,}
-private val NESTED_QUANTIFIER = Regex("""\((?:[^()\\]|\\.)*[+*](?:[^()\\]|\\.)*\)(?:[+*]|\{\d+,\d*})""")
-private val REDIRECTS = setOf("301", "302", "303", "307", "308")
-private val WEAK_PROTOCOLS = setOf("SSLv2", "SSLv3", "TLSv1", "TLSv1.1")
-private val WEAK_CIPHER = Regex("NULL|RC4|MD5|EXPORT|EXP-|DES|IDEA|SEED", RegexOption.IGNORE_CASE)
-private val DECODED = Regex("""\$(?:\{)?(uri|document_uri)\b""")
-private val USER_CONTROLLED =
-    Regex("""\$\{?(http_\w+|arg_\w+|cookie_\w+|host|request_uri|uri|args|query_string|[1-9])\b""")

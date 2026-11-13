@@ -2,6 +2,7 @@ package com.css.nginx.intention
 
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxPaths
+import com.intellij.codeInsight.hint.HintManager
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -9,6 +10,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import java.io.IOException
 
 /**
  * Moves the selected directives (or the one at the caret) into a new `<first directive>.conf` next to this file and includes it
@@ -50,8 +52,17 @@ class NginxExtractIncludeIntention : NginxIntention("Extract to include file") {
             .first { dir.findChild(it) == null }
         val lines = doc.charsSequence.subSequence(start, end).toString().lines()
         val common = lines.drop(1).filter { it.isNotBlank() }.minOfOrNull { it.length - it.trimStart().length } ?: 0
-        val file = dir.createChildData(this, name)
-        VfsUtil.saveText(file, (listOf(lines[0]) + lines.drop(1).map { it.drop(common) }).joinToString("\n") + "\n")
+        val file = try {
+            dir.createChildData(this, name).also {
+                VfsUtil.saveText(
+                    it,
+                    (listOf(lines[0]) + lines.drop(1).map { l -> l.drop(common) }).joinToString("\n") + "\n"
+                )
+            }
+        } catch (e: IOException) {  // read-only folder, disk full: leave the config as it was
+            HintManager.getInstance().showErrorHint(editor, "Cannot create $name: ${e.message}")
+            return
+        }
         doc.replaceString(start, end, "include ${VfsUtilCore.getRelativePath(file, NginxPaths.baseDir(dir)) ?: name};")
     }
 }

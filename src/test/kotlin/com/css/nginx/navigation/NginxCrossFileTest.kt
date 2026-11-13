@@ -156,4 +156,25 @@ class NginxCrossFileTest : BasePlatformTestCase() {
         assertEquals(target.containingFile.text.indexOf("hello"), target.textRange.startOffset)
     }
 
+
+    fun testRenameRejectsNamesNginxCannotParse() {
+        val v = NginxNamesValidator()
+        for (ok in listOf("${d}tenant", "${d}_x1", "@fallback", "backend", "app-v2.internal")) assertTrue(
+            ok,
+            v.isIdentifier(ok, project)
+        )
+        for (bad in listOf("my app", "a;b", "${d}1x", "${d}", "@", "x{", "'q'", "")) assertFalse(
+            bad,
+            v.isIdentifier(bad, project)
+        )
+        // past the validator (e.g. a programmatic rename): a message, not an IDE error
+        myFixture.configureByText("nginx.conf", "http { upstream ba<caret>ckend { server 127.0.0.1; } }")
+        val e = try {
+            myFixture.renameElementAtCaret("my app"); null
+        } catch (t: Throwable) {
+            t
+        }
+        assertTrue("$e", generateSequence(e) { it.cause }.any { it is com.intellij.util.IncorrectOperationException })
+    }
+
 }

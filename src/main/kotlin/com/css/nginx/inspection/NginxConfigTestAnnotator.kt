@@ -1,11 +1,14 @@
 package com.css.nginx.inspection
 
+import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.PathEnvironmentVariableUtil
 import com.intellij.execution.util.ExecUtil
+import com.intellij.ide.trustedProjects.TrustedProjects
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 
@@ -19,13 +22,20 @@ class NginxConfigTestAnnotator :
         // only the main file: included snippets can't be tested on their own
         if (file.name != "nginx.conf") return null
         val vf = file.virtualFile?.takeIf { it.isInLocalFileSystem } ?: return null
+        // nginx -t loads load_module .so files and runs perl_require code: never for a project the user hasn't trusted
+        if (!TrustedProjects.isProjectTrusted(file.project)) return null
         val nginx = PathEnvironmentVariableUtil.findInPath("nginx") ?: return null
         return Input(nginx.path, vf.path)
     }
 
     // shortcut: tests the saved file, so lines drift until the IDE autosaves; feed the document through a temp copy if that bothers users
     override fun doAnnotate(input: Input): List<Problem> {
-        val out = ExecUtil.execAndGetOutput(GeneralCommandLine(input.nginx, "-t", "-q", "-c", input.path), 10_000)
+        val out = try {
+            ExecUtil.execAndGetOutput(GeneralCommandLine(input.nginx, "-t", "-q", "-c", input.path), 10_000)
+        } catch (e: ExecutionException) {  // not executable, broken symlink...: no results rather than an IDE error
+            thisLogger().info("nginx -t could not run: ${e.message}")
+            return emptyList()
+        }
         return parseNginxTestOutput(out.stderr, input.path)
     }
 
@@ -38,19 +48,3 @@ class NginxConfigTestAnnotator :
         }
     }
 }
-
-private val LINE = Regex("""nginx: \[(\w+)] (.*) in (.+):(\d+)$""", RegexOption.MULTILINE)
-
-/** Problems `nginx -t` reported for [path]; messages without a location (e.g. log file permissions) are dropped. */
-fun parseNginxTestOutput(stderr: String, path: String): List<NginxConfigTestAnnotator.Problem> = LINE.findAll(stderr)
-    .filter { it.groupValues[3] == path }
-    .map {
-        val severity = if (it.groupValues[1] in setOf(
-                "emerg",
-                "alert",
-                "crit",
-                "error"
-            )
-        ) HighlightSeverity.ERROR else HighlightSeverity.WARNING
-        NginxConfigTestAnnotator.Problem(it.groupValues[4].toInt(), severity, it.groupValues[2])
-    }.toList()
