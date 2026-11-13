@@ -1,5 +1,7 @@
 package com.css.nginx.completion
 
+import com.css.nginx.NginxConstants.DIRECTORY_DIRECTIVES
+import com.css.nginx.NginxConstants.PASS_DIRECTIVES
 import com.css.nginx.data.NginxDirectives
 import com.css.nginx.data.NginxHeaders
 import com.css.nginx.data.NginxMimeTypes
@@ -62,11 +64,11 @@ class NginxCompletionContributor : CompletionContributor() {
                             "named location"
                         )
 
-                        d.directiveName in PASS -> names(p.originalFile, result, null, "upstream")
+                        d.directiveName in PASS_DIRECTIVES -> names(p.originalFile, result, null, "upstream")
                         NginxPaths.pathArg(d) != null && leaf in NginxPaths.pathArg(d)!! ->
                             completePaths(
                                 p.originalFile,
-                                d.directiveName in NginxPaths.DIRECTORIES,
+                                d.directiveName in DIRECTORY_DIRECTIVES,
                                 result.withPrefixMatcher(beforeCaret)
                             )
 
@@ -152,5 +154,3 @@ class NginxCompletionContributor : CompletionContributor() {
         }
     }
 }
-
-private val PASS = setOf("proxy_pass", "grpc_pass", "uwsgi_pass")

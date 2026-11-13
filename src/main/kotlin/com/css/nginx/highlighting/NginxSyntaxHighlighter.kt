@@ -2,7 +2,6 @@ package com.css.nginx.highlighting
 
 import com.css.nginx.lexer.NginxLexer
 import com.css.nginx.psi.NginxTypes
-import com.intellij.openapi.fileTypes.SingleLazyInstanceSyntaxHighlighterFactory
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType
 
@@ -19,8 +18,4 @@ class NginxSyntaxHighlighter : SyntaxHighlighterBase() {
             else -> null
         }
     )
-}
-
-class NginxSyntaxHighlighterFactory : SingleLazyInstanceSyntaxHighlighterFactory() {
-    override fun createHighlighter() = NginxSyntaxHighlighter()
 }

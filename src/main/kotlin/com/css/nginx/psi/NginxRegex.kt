@@ -1,11 +1,11 @@
 package com.css.nginx.psi
 
+import com.css.nginx.NginxConstants.MATCH_OPERATORS
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 
 /** Where a directive holds a regular expression: the token and the regex's range inside it. */
 object NginxRegex {
-    private val MATCH_OPERATORS = setOf("~", "~*", "!~", "!~*")
 
     fun of(d: NginxDirective): List<Pair<PsiElement, TextRange>> {
         val args = d.args

@@ -1,5 +1,6 @@
 package com.css.nginx.structure
 
+import com.css.nginx.NginxConstants.STRUCTURE_DIRECTIVES
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxFile
 import com.intellij.ide.projectView.PresentationData
@@ -39,7 +40,8 @@ class NginxStructureViewFactory : PsiStructureViewFactory {
                 is NginxDirective -> e.directives
                 else -> emptyList()
             }
-            return children.filter { it.block != null || it.directiveName in SHOWN }.map(::Element).toTypedArray()
+            return children.filter { it.block != null || it.directiveName in STRUCTURE_DIRECTIVES }.map(::Element)
+                .toTypedArray()
         }
 
         override fun getPresentation(): ItemPresentation = PresentationData(
@@ -54,5 +56,3 @@ class NginxStructureViewFactory : PsiStructureViewFactory {
         )
     }
 }
-
-private val SHOWN = setOf("include", "listen", "server_name")

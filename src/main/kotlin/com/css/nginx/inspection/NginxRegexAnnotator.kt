@@ -1,5 +1,7 @@
 package com.css.nginx.inspection
 
+import com.css.nginx.NginxConstants.PCRE_ONLY
+import com.css.nginx.NginxConstants.REGEX_META_CHARS
 import com.css.nginx.highlighting.NginxColors
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxRegex
@@ -39,7 +41,7 @@ class NginxRegexAnnotator : Annotator {
                         color(i, 1, NginxColors.REGEX_META); inClass = true
                     }
 
-                    c in META -> color(i, 1, NginxColors.REGEX_META)
+                    c in REGEX_META_CHARS -> color(i, 1, NginxColors.REGEX_META)
                 }
                 i++
             }
@@ -54,6 +56,3 @@ class NginxRegexAnnotator : Annotator {
         }
     }
 }
-
-private const val META = "^$|()*+?.{}"
-private val PCRE_ONLY = Regex("""\(\?\||\[\[:|\\K|\(\*|\(\?R\)|\(\?\d""")
