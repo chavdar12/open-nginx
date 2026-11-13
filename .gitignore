@@ -1,6 +1,30 @@
-.gradle
-.idea
-.intellijPlatform
-.kotlin
-build
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ Platform Gradle Plugin: downloaded IDEs and the runIde/test sandboxes
+.intellijPlatform/
+
+# Kotlin compiler caches
+.kotlin/
+
+# IDE (shared run configurations live in .run/)
+.idea/
 *.iml
+*.ipr
+*.iws
+out/
+
+# Python (tools/ generators)
+__pycache__/
+*.py[cod]
+
+# Logs and crash dumps
+*.log
+hs_err_pid*
+replay_pid*
+
+# OS
+.DS_Store
+Thumbs.db
