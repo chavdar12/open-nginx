@@ -38,9 +38,12 @@ jobs:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
           queries: security-and-quality
-      # CodeQL only sees Kotlin it watches being compiled; no daemon or cache, or nothing compiles in front of it
+      # CodeQL only sees Kotlin it watches being compiled: no daemon or cache, or nothing compiles in front of it.
+      # The traced compiler runs inside Gradle's JVM, whose default 512 MB heap ran out (GC overhead limit exceeded).
       - if: matrix.build-mode == 'manual'
-        run: ./gradlew compileKotlin compileTestKotlin --no-daemon --no-build-cache --rerun-tasks
+        run: >
+          ./gradlew compileKotlin compileTestKotlin --no-daemon --no-build-cache --rerun-tasks
+          -Dorg.gradle.jvmargs=-Xmx6g -Pkotlin.compiler.execution.strategy=in-process
       - uses: github/codeql-action/analyze@v4
         with:
           category: /language:${{ matrix.language }}
