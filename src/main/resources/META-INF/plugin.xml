@@ -1,0 +1,95 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.css.open-nginx</id>
+
+    <!-- Public plugin name should be written in Title Case.
+     Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
+    <name>open-nginx</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor url="https://www.yourcompany.com">YourCompany</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
+    <description><![CDATA[
+        Support for nginx configuration files:
+        <ul>
+          <li>Highlighting, completion of directives (per block, including in included snippets), values, variables,
+              headers, MIME types, file paths, and names from every file of the project</li>
+          <li>Go to declaration, Find Usages, Rename and Safe Delete for upstreams, variables and named locations;
+              navigation into include files (globs too)</li>
+          <li>Checks: argument counts and values, wrong block, unknown variables, missing includes, URLs, duplicates,
+              clashing server blocks, obsolete directives, invalid regexes, and gixy-style security checks</li>
+          <li>Quick fixes and intentions: typo fixes, move to the right block, HTTP to HTTPS redirect, extract / inline include</li>
+          <li>Structure view, folding, brace matching, live templates, quick documentation, configurable formatter,
+              <code>nginx -t</code> results when nginx is installed</li>
+          <li>OpenResty (Lua blocks, injected when a Lua plugin is installed), headers-more, set-misc, echo, brotli, geoip2,
+              njs imports, and Docker <code>*.conf.template</code> files</li>
+        </ul>
+        Directive data comes from the official nginx documentation and the modules' READMEs (BSD-licensed).
+        ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Extensions defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- If the plugin is published on JetBrains Marketplace, errors reported by users are available on the plugin page.
+             See https://plugins.jetbrains.com/docs/marketplace/error-handler.html#developers-side for details. -->
+        <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
+        <fileType name="Nginx" implementationClass="com.css.nginx.lang.NginxFileType" fieldName="INSTANCE"
+                  language="Nginx"
+                  extensions="nginx" fileNames="nginx.conf;fastcgi_params;proxy_params;scgi_params;uwsgi_params"
+                  patterns="*.nginx.conf;*.conf.template;*.nginx.template"/>
+        <fileTypeDetector implementation="com.css.nginx.lang.NginxFileTypeDetector"/>
+        <fileTypeOverrider implementation="com.css.nginx.lang.NginxFileTypeOverrider"/>
+        <editorFactoryDocumentListener implementation="com.css.nginx.lang.NginxConfTypeRefresher"/>
+        <lang.parserDefinition language="Nginx" implementationClass="com.css.nginx.parser.NginxParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Nginx"
+                                       implementationClass="com.css.nginx.highlighting.NginxSyntaxHighlighterFactory"/>
+        <completion.contributor language="Nginx"
+                                implementationClass="com.css.nginx.completion.NginxCompletionContributor"/>
+        <annotator language="Nginx" implementationClass="com.css.nginx.inspection.NginxAnnotator"/>
+        <annotator language="Nginx" implementationClass="com.css.nginx.inspection.NginxUrlAnnotator"/>
+        <annotator language="Nginx" implementationClass="com.css.nginx.inspection.NginxSecurityAnnotator"/>
+        <annotator language="Nginx" implementationClass="com.css.nginx.inspection.NginxRegexAnnotator"/>
+        <annotator language="Nginx" implementationClass="com.css.nginx.inspection.NginxDuplicateAnnotator"/>
+        <spellchecker.support language="Nginx"
+                              implementationClass="com.intellij.spellchecker.tokenizer.SpellcheckingStrategy"/>
+        <lang.commenter language="Nginx" implementationClass="com.css.nginx.editor.NginxCommenter"/>
+        <lang.elementManipulator forClass="com.css.nginx.psi.NginxDirective" implementationClass="com.css.nginx.psi.NginxDirectiveManipulator"/>
+        <lang.refactoringSupport language="Nginx" implementationClass="com.css.nginx.navigation.NginxRefactoringSupport"/>
+        <lang.findUsagesProvider language="Nginx" implementationClass="com.css.nginx.navigation.NginxFindUsagesProvider"/>
+        <lang.psiStructureViewFactory language="Nginx" implementationClass="com.css.nginx.structure.NginxStructureViewFactory"/>
+        <lang.foldingBuilder language="Nginx" implementationClass="com.css.nginx.editor.NginxFoldingBuilder"/>
+        <lang.braceMatcher language="Nginx" implementationClass="com.css.nginx.editor.NginxBraceMatcher"/>
+        <multiHostInjector implementation="com.css.nginx.inject.NginxInjector"/>
+        <liveTemplateContext contextId="NGINX" implementation="com.css.nginx.editor.NginxTemplateContextType"/>
+        <defaultLiveTemplates file="/liveTemplates/Nginx.xml"/>
+        <lang.documentationProvider language="Nginx"
+                                    implementationClass="com.css.nginx.docs.NginxDocumentationProvider"/>
+        <colorSettingsPage implementation="com.css.nginx.highlighting.NginxColorSettingsPage"/>
+        <externalAnnotator language="Nginx" implementationClass="com.css.nginx.inspection.NginxConfigTestAnnotator"/>
+        <lang.formatter language="Nginx" implementationClass="com.css.nginx.formatter.NginxFormattingModelBuilder"/>
+        <langCodeStyleSettingsProvider implementation="com.css.nginx.formatter.NginxLanguageCodeStyleSettingsProvider"/>
+        <intentionAction>
+            <language>Nginx</language>
+            <className>com.css.nginx.intention.NginxSslRedirectIntention</className>
+            <category>Nginx</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Nginx</language>
+            <className>com.css.nginx.intention.NginxInlineIncludeIntention</className>
+            <category>Nginx</category>
+        </intentionAction>
+        <intentionAction>
+            <language>Nginx</language>
+            <className>com.css.nginx.intention.NginxExtractIncludeIntention</className>
+            <category>Nginx</category>
+        </intentionAction>
+    </extensions>
+
+</idea-plugin>

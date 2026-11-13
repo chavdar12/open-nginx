@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""Generate src/main/resources/nginx/thirdparty.tsv (same columns as directives.tsv) from the READMEs of popular
+third-party modules, all BSD-licensed:
+  openresty/lua-nginx-module, stream-lua-nginx-module, headers-more-nginx-module, set-misc-nginx-module, echo-nginx-module,
+  google/ngx_brotli, leev/ngx_http_geoip2_module (hand-written below: its README has no syntax table).
+
+usage: python3 tools/gen_thirdparty.py <folder with the READMEs saved as owner_repo.md>
+"""
+import pathlib, re, sys
+
+src = pathlib.Path(sys.argv[1])
+res = pathlib.Path(__file__).parent.parent / "src/main/resources/nginx"
+
+
+def clean(s):
+    s = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", s)  # [text](link) -> text
+    s = re.sub(r"\\([\[\]_*])", r"\1", s)  # markdown escapes
+    return " ".join(s.replace("`", "").replace("*", "").replace("&lt;", "<").replace("&gt;", ">").split())
+
+
+def ctx(c):
+    out = set()
+    for part in clean(c).split(","):
+        p = part.strip()
+        out.add("if" if p.endswith(" if") or p.endswith("-if") or p == "if" else p.split()[0] if p else "")
+    return sorted(x for x in out if x)
+
+
+def cut(t, limit=600):
+    """Shorten to whole sentences."""
+    if len(t) <= limit:
+        return t
+    end = t.rfind(". ", 0, limit)
+    return t[:end + 1] if end > 0 else t[:limit] + "…"
+
+
+def values(name, syntax):
+    m = re.fullmatch(re.escape(name) + r"\s+(\w+(?:\s*\|\s*\w+)+)\s*;?", syntax)
+    return ",".join(v.strip() for v in m.group(1).split("|")) if m else ""
+
+
+NGINX_CONTEXTS = {"main", "http", "server", "location", "if", "upstream", "stream", "mail"}
+rows = {}
+agentzh = {  # repo -> README anchor base
+    "openresty_lua-nginx-module": "https://github.com/openresty/lua-nginx-module#",
+    "openresty_stream-lua-nginx-module": "https://github.com/openresty/stream-lua-nginx-module#",
+    "openresty_headers-more-nginx-module": "https://github.com/openresty/headers-more-nginx-module#",
+    "openresty_set-misc-nginx-module": "https://github.com/openresty/set-misc-nginx-module#",
+    "openresty_echo-nginx-module": "https://github.com/openresty/echo-nginx-module#",
+}
+for repo, url in agentzh.items():
+    text = (src / f"{repo}.md").read_text("utf-8")
+    # name\n----\n**syntax:** *...*\n\n**default:** *...*\n\n**context:** *...*\n ... first paragraph
+    # the description runs until the first code example or the next section
+    for m in re.finditer(r"^(\w+)\n-+\n+((?:\*\*\w+:\*\*[^\n]*\n+)+)(.*?)(?=\n\w[\w.]*\n-{3,}\n|\Z)", text, re.M | re.S):
+        name, fields, doc = m.group(1), m.group(2), m.group(3)
+        # prose only: drop code examples and TOC links, keep the first two real paragraphs ("For instance," alone is not one)
+        paras = [p for p in re.sub(r"```.*?```", "", doc, flags=re.S).split("\n\n") if p.strip() and "Back to TOC" not in p]
+        doc = " ".join([p for p in paras if not p.rstrip().endswith(":") and not p.rstrip().endswith(",")][:2])
+        f = dict((k.lower(), v) for k, v in re.findall(r"\*\*(\w+):\*\*\s*(.*)", fields))
+        # Lua API functions (ngx.say, print...) have the same layout but list *_by_lua* "contexts"
+        if "syntax" not in f or "context" not in f or not set(ctx(f["context"])) <= NGINX_CONTEXTS:
+            continue
+        syntax = clean(f["syntax"])
+        prev = rows.get(name)
+        contexts = sorted(set(ctx(f["context"])) | set(prev[1].split(",") if prev else []))
+        rows[name] = [name, ",".join(contexts), "0", "", values(name, syntax), url + name.lower(),
+                      clean(f.get("default", "")), syntax, cut(clean(doc))]
+
+text = (src / "google_ngx_brotli.md").read_text("utf-8")
+for m in re.finditer(r"^### `(\w+)`\n+((?:- \*\*\w+\*\*:[^\n]*\n)+)\n*(.*?)(?=\n\n)", text, re.M | re.S):
+    name, fields, doc = m.groups()
+    f = dict((k.lower(), v) for k, v in re.findall(r"- \*\*(\w+)\*\*:\s*(.*)", fields))
+    syntax = clean(f.get("syntax", name))
+    rows[name] = [name, ",".join(ctx(f.get("context", ""))), "0", "", values(name, syntax),
+                  "https://github.com/google/ngx_brotli#" + name, clean(f.get("default", "")), syntax, cut(clean(doc))]
+
+geo = "https://github.com/leev/ngx_http_geoip2_module#"
+for name, c, syntax, doc in [
+    ("geoip2", "http,stream", "geoip2 /path/to/db.mmdb { $variable [default=value] [source=$var] path...; }",
+     "Loads a MaxMind GeoIP2 database; each $variable line in the block extracts a field for the client address."),
+    ("geoip2_proxy", "http", "geoip2_proxy cidr", "Defines trusted addresses: for them the address from X-Forwarded-For is used."),
+    ("geoip2_proxy_recursive", "http", "geoip2_proxy_recursive on | off",
+     "With on, the last non-trusted address in X-Forwarded-For is used instead of the last one."),
+]:
+    rows[name] = [name, c, "0", "", values(name, syntax), geo + "example-usage", "", syntax, doc]
+
+assert len(rows) > 150, f"only {len(rows)} directives parsed"
+with (res / "thirdparty.tsv").open("w") as w:
+    w.write("# Generated by tools/gen_thirdparty.py from the READMEs of lua-nginx-module, stream-lua-nginx-module,\n"
+            "# headers-more, set-misc, echo (OpenResty Inc. and contributors), ngx_brotli (Google), ngx_http_geoip2_module\n"
+            "# (Lee Valentine). All BSD-licensed. Argument counts are not checked for these (min 0, max empty).\n"
+            "# name\tcontexts\tmin args\tmax args\tallowed values\turl\tdefault\tsyntax\tdoc\n")
+    for n in sorted(rows):
+        w.write("\t".join(x.replace("\t", " ") for x in rows[n]) + "\n")
+print(f"{len(rows)} third-party directives -> {res / 'thirdparty.tsv'}")

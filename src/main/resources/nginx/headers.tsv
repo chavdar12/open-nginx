@@ -1,0 +1,74 @@
+# Hand-written for this plugin (not generated). Links point to MDN / nginx.org for the full description.
+# name	url	doc
+Accept	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept	Media types the client can handle in the response, in order of preference.
+Accept-Encoding	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding	Content encodings (compression such as gzip, br, zstd) the client understands.
+Accept-Language	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language	Natural languages the client prefers for the response.
+Access-Control-Allow-Credentials	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials	CORS: whether the browser may expose the response when the request was sent with credentials (cookies, HTTP auth).
+Access-Control-Allow-Headers	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers	CORS preflight answer: request headers the actual request may use.
+Access-Control-Allow-Methods	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods	CORS preflight answer: HTTP methods allowed for the actual request.
+Access-Control-Allow-Origin	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin	CORS: the origin allowed to read the response, or * for any origin (not allowed together with credentials).
+Access-Control-Expose-Headers	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers	CORS: response headers that scripts on other origins may read.
+Access-Control-Max-Age	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age	CORS: how many seconds the browser may cache a preflight answer.
+Age	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Age	Seconds the response has been in a proxy cache.
+Allow	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Allow	HTTP methods the resource supports; sent with 405 Method Not Allowed.
+Alt-Svc	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Alt-Svc	Advertises another way to reach the same service, e.g. HTTP/3 on a UDP port (h3=":443").
+Authorization	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization	Credentials for authenticating the client to the server (Basic, Bearer token...).
+Cache-Control	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control	Caching rules for browsers and proxies: max-age, no-cache, no-store, private, public, immutable...
+Connection	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Connection	Hop-by-hop options for this connection only, e.g. keep-alive, close, or upgrade for WebSockets; proxies do not forward it.
+Content-Disposition	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition	Whether content is shown inline or downloaded as an attachment, with an optional file name.
+Content-Encoding	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding	Compression applied to the body (gzip, br, zstd); the client must decode it.
+Content-Language	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Language	Natural language of the intended audience of the body.
+Content-Length	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Length	Size of the body in bytes.
+Content-Security-Policy	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy	Restricts which sources the page may load scripts, styles, images, frames and more from; the main defense against XSS.
+Content-Security-Policy-Report-Only	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only	Like Content-Security-Policy, but only reports violations instead of blocking them; useful to test a policy.
+Content-Type	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type	Media type of the body, e.g. text/html; charset=utf-8.
+Cookie	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie	Cookies the browser sends back that were previously set with Set-Cookie.
+Cross-Origin-Embedder-Policy	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy	Requires cross-origin resources to opt in (CORP or CORS) before the page may embed them; needed for cross-origin isolation.
+Cross-Origin-Opener-Policy	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy	Isolates the page's browsing context group from cross-origin windows that it opens or that open it.
+Cross-Origin-Resource-Policy	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Resource-Policy	Lets a resource refuse to be loaded by other sites or origins (same-site, same-origin, cross-origin).
+Date	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date	Date and time at which the message was created.
+Early-Data	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Early-Data	Set to 1 when the request arrived in TLS 1.3 early data (0-RTT) and may be replayed.
+ETag	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag	Identifier of a specific version of the resource; used with If-None-Match for revalidation.
+Expect	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect	Expectations the server must meet, practically only 100-continue before the body is sent.
+Expires	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expires	Date after which the response is stale; overridden by Cache-Control max-age.
+Forwarded	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded	Standard form of X-Forwarded-For/-Host/-Proto: client address, host and protocol as seen by proxies.
+Host	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host	Host name and port the request is for; selects the virtual server. With proxy_pass, nginx sends the upstream's address unless you set it, e.g. proxy_set_header Host $host.
+If-Match	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Match	Makes the request conditional: only proceed if the resource's ETag matches.
+If-Modified-Since	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since	Conditional request: send the body only if the resource changed after this date, otherwise 304.
+If-None-Match	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match	Conditional request: send the body only if the ETag differs, otherwise 304 Not Modified.
+If-Range	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Range	Makes a Range request conditional on the resource being unchanged.
+Keep-Alive	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive	Hints for a persistent connection (timeout, max requests); hop-by-hop.
+Last-Modified	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified	Date the resource was last changed; used with If-Modified-Since.
+Link	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link	Links related to the resource, e.g. preload hints; also used by 103 Early Hints.
+Location	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Location	URL to redirect to (3xx) or of a newly created resource (201).
+Origin	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin	Scheme, host and port the request came from; the basis of CORS checks.
+Permissions-Policy	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy	Enables or disables browser features (camera, geolocation, fullscreen...) for the page and its frames.
+Pragma	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Pragma	HTTP/1.0 caching hint; Pragma: no-cache. Superseded by Cache-Control.
+Proxy-Authorization	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization	Credentials for authenticating to a proxy server.
+Range	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Range	Requests only part of the resource, e.g. bytes=0-1023; answered with 206 Partial Content.
+Referer	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer	Address of the page that linked to the requested resource (the misspelling is standard).
+Referrer-Policy	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy	How much referrer information the browser includes in the Referer header of later requests.
+Retry-After	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After	How long to wait before retrying, with 503 or 429 responses or redirects.
+Server	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server	Software that produced the response; nginx's version can be hidden with server_tokens off.
+Set-Cookie	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie	Sends a cookie to the browser, with attributes such as Secure, HttpOnly, SameSite, Max-Age.
+Strict-Transport-Security	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security	HSTS: tells browsers to use only HTTPS for this host for max-age seconds, optionally includeSubDomains and preload. Send it with always so error responses carry it too.
+TE	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/TE	Transfer encodings the client accepts, e.g. trailers; required to be trailers for gRPC.
+Transfer-Encoding	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding	How the body is framed for transfer, e.g. chunked; hop-by-hop.
+Upgrade	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Upgrade	Asks to switch protocol on this connection, e.g. websocket. Hop-by-hop, so nginx must pass it explicitly: proxy_set_header Upgrade $http_upgrade.
+User-Agent	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent	Identifies the client software (browser, bot, library).
+Vary	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary	Request headers that change the response, so caches keep separate copies (e.g. Vary: Accept-Encoding).
+Via	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Via	Proxies the message passed through.
+WWW-Authenticate	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate	Authentication method the client must use; sent with 401 Unauthorized.
+X-Accel-Buffering	https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_ignore_headers	nginx-specific, set by the upstream: yes/no turns response buffering on or off for this response.
+X-Accel-Charset	https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_ignore_headers	nginx-specific, set by the upstream: charset of the response.
+X-Accel-Expires	https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_ignore_headers	nginx-specific, set by the upstream: seconds (or @unix-time) to cache the response in nginx; 0 disables caching.
+X-Accel-Limit-Rate	https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_ignore_headers	nginx-specific, set by the upstream: limits the rate of sending this response to the client.
+X-Accel-Redirect	https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_ignore_headers	nginx-specific, set by the upstream: makes nginx serve an internal redirect to this URI instead, e.g. protected downloads.
+X-Content-Type-Options	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options	nosniff stops browsers from guessing a different Content-Type than the one sent.
+X-Forwarded-For	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For	Client address followed by each proxy's address. Append the client with proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for.
+X-Forwarded-Host	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Host	Original Host requested by the client before a proxy changed it.
+X-Forwarded-Proto	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto	Protocol (http or https) the client used to reach the proxy; set it with $scheme.
+X-Frame-Options	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options	Whether the page may be shown in a frame (DENY, SAMEORIGIN); superseded by CSP frame-ancestors.
+X-Real-IP		Non-standard: the client's IP address as seen by the proxy, set with proxy_set_header X-Real-IP $remote_addr; read back by the realip module.
+X-Request-ID		Non-standard: unique ID for tracing a request through proxies and logs; nginx provides one as $request_id.
+X-XSS-Protection	https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection	Obsolete browser XSS filter switch; modern browsers ignore it. Use Content-Security-Policy instead.
