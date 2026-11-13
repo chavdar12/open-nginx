@@ -1,155 +1,109 @@
 # open-nginx
 
-[![Twitter Follow](https://img.shields.io/badge/follow-%40JBPlatform-1DA1F2?logo=twitter)](https://twitter.com/JBPlatform)
-[![Developers Forum](https://img.shields.io/badge/JetBrains%20Platform-Join-blue)][jb:forum]
+[![CI](https://github.com/chavdar12/open-nginx/actions/workflows/ci.yml/badge.svg)](https://github.com/chavdar12/open-nginx/actions/workflows/ci.yml)
+[![Code Quality](https://github.com/chavdar12/open-nginx/actions/workflows/code-quality.yml/badge.svg)](https://github.com/chavdar12/open-nginx/actions/workflows/code-quality.yml)
 
-## Overview
+An IntelliJ Platform plugin for nginx configuration files. It works in every JetBrains IDE (2026.2 and later): IntelliJ IDEA,
+PyCharm, WebStorm, GoLand and the rest.
 
-This repository implements an IntelliJ Platform plugin.
+Directive data is generated from nginx's own documentation and source code, so checks and docs follow what nginx actually
+accepts.
 
-## Demo Functionality
+## Features
 
-The sample plugin adds a `My Tool Window` tool window with a simple functionality of shuffling a random number.
+**Editing**
+- Syntax highlighting, structure view, folding, brace matching and a configurable formatter (column alignment, tabs, wrapping)
+- Completion that knows which block you are in, including inside snippets pulled in by `include`: directives, values,
+  variables, HTTP headers, MIME types and file paths
+- Completion across files: upstreams, `$variables` from `map`/`set`/`geo`, and `@named` locations from any file in the project
+- Hover docs from nginx.org for directives, their parameters, variables and HTTP headers
+- Live templates: `proxy`, `upstream`, `ssl`, `redirect`, `ws`, `php`, `cors`, `cache`, `static`, `gzip`, `spa`
 
-## Plugin structure
+**Navigation and refactoring**
+- Go to declaration, Find Usages, Rename and Safe Delete for upstreams, variables and named locations
+- Cmd/Ctrl+click on `include` (globs open every match), `proxy_pass http://upstream`, `js_import` and `js_content module.function`
+- Extract a block into an include file, or inline an include back
 
-A generated project contains the following content structure:
+**Checks**
+- Argument counts and values, directives in the wrong block, typos ("did you mean"), unknown variables, missing include files
+- Directives nginx rejects as duplicate (the list is generated from nginx's C sources), clashing `server_name` and
+  `default_server` across included files, obsolete directives
+- Invalid regexes in `location`, `rewrite`, `if`, `server_name` and `map`, plus ReDoS-prone patterns
+- Security checks in the spirit of [gixy](https://github.com/yandex/gixy): alias path traversal, lost `add_header`, Host
+  spoofing, HTTP response splitting, weak origin checks, reflected CORS, weak TLS, SSRF, version disclosure
+- `nginx -t` errors shown on the right lines when an `nginx` binary is on `PATH`
+- Quick fixes: replace an invalid value, fix a typo, move to the right block, remove a duplicate, copy inherited
+  `add_header` lines, add an HTTP to HTTPS redirect
 
-```
-.
-├── .run/                   Predefined Run/Debug Configurations
-├── gradle
-│   ├── wrapper/            Gradle Wrapper
-│   ├── libs.versions.toml  Version catalog
-├── src                     Plugin sources
-│   └── main
-│       ├── kotlin/         Kotlin production sources
-│       └── resources/      Plugin resources
-│           ├── META-INF/   Plugin configuration file and logo
-│           └── messages/   Message bundles
-├── .gitignore              Git ignoring rules
-├── build.gradle.kts        Gradle build configuration
-├── gradle.properties       Gradle configuration properties
-├── gradlew                 *nix Gradle Wrapper script
-├── gradlew.bat             Windows Gradle Wrapper script
-├── README.md               This file
-└── settings.gradle.kts     Gradle project settings
-```
+**Modules and file types**
+- Third-party modules: OpenResty (Lua), headers-more, set-misc, echo, brotli and geoip2. Unknown directives and variables
+  can be added to the project's known list (stored in `.idea/nginx.xml`).
+- Lua inside `*_by_lua_block` is treated as Lua when a Lua plugin such as EmmyLua2 is installed
+- nginx files are recognized by name (`nginx.conf`, `*.nginx`, `fastcgi_params` and friends) and by content (any `*.conf`
+  that looks like nginx), including Docker `*.conf.template` files with `${ENV}` placeholders
 
-In addition to the configuration files, the most crucial part is the `src` directory, which contains our implementation
-and the manifest for our plugin – [plugin.xml][file:plugin.xml].
+## Installation
 
-> [!NOTE]
-> To use Java in your plugin, create the `/src/main/java` directory.
+The plugin is not on JetBrains Marketplace yet. To install it from source:
 
-The plugin logo is placed in `src/main/resources/META-INF/pluginIcon.svg`.
-See [Plugin Logo][docs:logo] for more information and logo requirements.
-
-## Build script
-
-The [build.gradle.kts][file:build.gradle.kts] is the core of the project definition.
-It applies three Gradle plugins:
-
-| Plugin                            | Description                                                                      |
-|-----------------------------------|----------------------------------------------------------------------------------|
-| `org.jetbrains.kotlin.jvm`        | Adds Kotlin support                                                              |
-| `org.jetbrains.changelog`         | Simplifies patching the [CHANGELOG.md][file:CHANGELOG.md] file                   |
-| `org.jetbrains.intellij.platform` | The [IntelliJ Platform Gradle Plugin][docs:intellij-platform-gradle-plugin-docs] |
-
-The `intellijPlatform` dependencies block selects the IDE to compile against:
-
-```kotlin
-intellijIdea("2026.2.4")
+```sh
+./gradlew buildPlugin
 ```
 
-See [Target Versions][docs:target-version] for more information.
+Then in the IDE: **Settings | Plugins | ⚙ | Install Plugin from Disk…** and pick `build/distributions/open-nginx-*.zip`.
 
-The `intellijPlatform` dependencies block also contains a dependency on the platform testing framework:
+## Development
 
-```kotlin
-testFramework(TestFrameworkType.Platform)
+Needs a JDK (CI and development use JDK 25). Gradle downloads the IDE to build against on first run.
+
+| Command | What it does |
+|---|---|
+| `./gradlew runIde` | Starts a sandbox IDE with the plugin installed |
+| `./gradlew test` | Runs the tests, including 508 configs from nginx's own test suite that must produce no false warnings |
+| `./gradlew buildPlugin` | Builds the installable zip in `build/distributions/` |
+
+The same tasks are available as run configurations in `.run/`.
+
+If tests fail with `NoSuchMethodError` after pulling, Gradle's build cache served a stale class:
+`./gradlew test --no-build-cache --rerun-tasks`.
+
+### Project layout
+
+```
+src/main/kotlin/com/css/nginx/
+  lexer/ parser/ psi/     tokens, parse tree, references and cross-file declarations
+  completion/ docs/       completion and hover docs
+  inspection/             checks and their quick fixes
+  intention/              extract/inline include, HTTPS redirect
+  formatter/ editor/      formatter, folding, braces, commenter, live template context
+  navigation/ structure/  find usages, rename, safe delete, structure view
+  lang/ highlighting/     file type detection, colors
+  inject/                 Lua injection
+src/main/resources/nginx/ directive, variable and parameter data (generated, see below)
+src/test/testData/        hand-written configs and the nginx-tests corpus
+tools/                    generators for the data files
 ```
 
-See [Testing][docs:testing] for more information
+### Regenerating the data
 
-## Plugin configuration file
+The files in `src/main/resources/nginx/` are generated; edit the generators in `tools/`, not the files.
 
-The plugin configuration file is a [plugin.xml][file:plugin.xml] file located in the `src/main/resources/META-INF`
-directory.
-It provides general information about the plugin, its dependencies, extensions, and listeners.
+| Data | Source | Command |
+|---|---|---|
+| Directives, variables, parameters, obsolete directives (with HTML docs) | [nginx/nginx.org](https://github.com/nginx/nginx.org) | `python3 tools/gen_directives.py <nginx.org checkout>` |
+| Directives that may appear once per block | [nginx/nginx](https://github.com/nginx/nginx) | `python3 tools/gen_single.py <nginx checkout>` |
+| Third-party module directives | the modules' READMEs | `python3 tools/gen_thirdparty.py <folder of READMEs>` |
+| Test corpus | [nginx/nginx-tests](https://github.com/nginx/nginx-tests) | `python3 tools/extract_nginx_tests.py <nginx-tests checkout>` |
 
-You can read more about this file in the [Plugin Configuration File][docs:plugin.xml] section of our documentation.
+`headers.tsv` is the one hand-written data file.
 
-### Plugin ID and name
+## Credits
 
-Generated plugin ID and name may require adjustment.
+Directive data and documentation come from the nginx documentation and source code (© Igor Sysoev, Nginx, Inc.,
+BSD-2-Clause) and from the READMEs of the supported third-party modules (BSD-licensed). The test corpus is taken from
+nginx-tests (BSD-2-Clause). Security checks are modeled on [gixy](https://github.com/yandex/gixy).
 
-These values are generated based on _Group ID_ and _Artifact ID_ provided in the IDE Plugin wizard.
-It is recommended to review `<id>` and `<name>` elements in the plugin.xml file, and adjust them if needed.
+## License
 
-Please note that Gradle properties `rootProject.name` and `project.group` don't need to match the `<id>` and `<name>`
-elements.
-There is no IntelliJ Platform-related reason they should as they serve different functions.
-
-## Predefined Run/Debug configurations
-
-Within the default project structure, there is a `.run` directory provided containing predefined *Run/Debug
-configurations* that expose corresponding Gradle tasks:
-
-| Configuration name  | Description                                                                                                                                                                           |
-|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Run IDE with Plugin | Runs [`:runIde`][docs:intellij-platform-gradle-plugin-runIde] IntelliJ Platform Gradle Plugin task. Use the *Debug* icon for plugin debugging.                                        |
-| Run Tests           | Runs [`:check`][gradle:lifecycle-tasks] Gradle task.                                                                                                                                  |
-| Run Verifications   | Runs [`:verifyPlugin`][docs:intellij-platform-gradle-plugin-verifyPlugin] IntelliJ Platform Gradle Plugin task to check the plugin compatibility against the specified IntelliJ IDEs. |
-
-> [!NOTE]
-> You can find the logs from the running task in the `idea.log` tab.
-
-## Publishing the plugin
-
-> [!TIP]
-> Make sure to follow all guidelines listed in [Publishing a Plugin][docs:publishing] to follow all recommended and
-required steps.
-
-Releasing a plugin to [JetBrains Marketplace](https://plugins.jetbrains.com) is a straightforward operation that uses
-the `publishPlugin` Gradle task provided by
-the [intellij-platform-gradle-plugin][docs:intellij-platform-gradle-plugin-docs].
-
-You can also upload the plugin to the [JetBrains Plugin Repository](https://plugins.jetbrains.com/plugin/upload)
-manually via UI.
-
-## Useful links
-
-- [IntelliJ Platform SDK Plugin SDK][docs]
-- [IntelliJ Platform Gradle Plugin Documentation][docs:intellij-platform-gradle-plugin-docs]
-- [IntelliJ Platform Explorer][jb:ipe]
-- [JetBrains Marketplace Quality Guidelines][jb:quality-guidelines]
-- [IntelliJ Platform UI Guidelines][jb:ui-guidelines]
-- [JetBrains Marketplace Paid Plugins][jb:paid-plugins]
-- [IntelliJ SDK Code Samples][gh:code-samples]
-
-[docs]: https://plugins.jetbrains.com/docs/intellij
-[docs:plugin.xml]: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html?from=IJPluginReadmeFile
-[docs:publishing]: https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginReadmeFile
-[docs:intellij-platform-gradle-plugin-docs]: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html?from=IJPluginReadmeFile
-[docs:intellij-platform-gradle-plugin-runIde]: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-tasks.html?from=IJPluginReadmeFile#runIde
-[docs:intellij-platform-gradle-plugin-verifyPlugin]: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-tasks.html?from=IJPluginReadmeFile#verifyPlugin
-[docs:logo]: https://plugins.jetbrains.com/docs/intellij/plugin-icon-file.html?from=IJPluginReadmeFile
-[docs:target-version]: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html?from=IJPluginReadmeFile#target-versions
-[docs:testing]: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html?from=IJPluginReadmeFile#testing
-
-[file:build.gradle.kts]: ./build.gradle.kts
-[file:CHANGELOG.md]: ./CHANGELOG.md
-[file:gradle.properties]: ./gradle.properties
-[file:plugin.xml]: ./src/main/resources/META-INF/plugin.xml
-
-[gh:code-samples]: https://github.com/JetBrains/intellij-sdk-code-samples
-
-[gradle:lifecycle-tasks]: https://docs.gradle.org/current/userguide/java_plugin.html#lifecycle_tasks
-
-[jb:github]: https://github.com/JetBrains/.github/blob/main/profile/README.md
-[jb:forum]: https://platform.jetbrains.com/
-[jb:quality-guidelines]: https://plugins.jetbrains.com/docs/marketplace/quality-guidelines.html
-[jb:paid-plugins]: https://plugins.jetbrains.com/docs/marketplace/paid-plugins-marketplace.html
-[jb:ipe]: https://jb.gg/ipe
-[jb:ui-guidelines]: https://jetbrains.github.io/ui
+[Apache License 2.0](LICENSE), © 2026 Chavdar Shishkov. The generated nginx data keeps its upstream BSD-2-Clause terms,
+noted at the top of each generated file.
