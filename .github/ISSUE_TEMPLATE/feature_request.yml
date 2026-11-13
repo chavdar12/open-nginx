@@ -1,0 +1,15 @@
+name: Feature request
+description: A new check, a module to support, or an editor feature
+labels: [enhancement]
+body:
+  - type: textarea
+    id: want
+    attributes:
+      label: What you would like
+      description: Include an example config if it helps.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it helps
