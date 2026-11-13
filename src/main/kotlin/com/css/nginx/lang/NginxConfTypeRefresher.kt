@@ -1,5 +1,6 @@
 package com.css.nginx.lang
 
+import com.css.nginx.NginxConstants.SNIFFED
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
@@ -16,7 +17,6 @@ import com.intellij.util.Alarm
 import com.intellij.util.FileContentUtilCore
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
-import com.css.nginx.NginxConstants.SNIFFED
 
 /** A new test.conf starts empty (not nginx); when typing makes it nginx (or not), re-detect so the open editor switches. */
 class NginxConfTypeRefresher : DocumentListener {

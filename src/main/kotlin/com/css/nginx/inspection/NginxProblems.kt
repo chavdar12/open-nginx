@@ -1,11 +1,11 @@
 package com.css.nginx.inspection
 
+import com.css.nginx.NginxConstants.QUOTED_NAME
+import com.css.nginx.NginxConstants.TOOLTIP_TAG
 import com.intellij.lang.annotation.AnnotationBuilder
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.text.StringUtil
-import com.css.nginx.NginxConstants.QUOTED_NAME
-import com.css.nginx.NginxConstants.TOOLTIP_TAG
 
 /** An annotation whose hover tooltip shows 'quoted' names as code; the plain message stays for the Problems view. */
 fun AnnotationHolder.problem(severity: HighlightSeverity, message: String): AnnotationBuilder =

@@ -1,9 +1,9 @@
 package com.css.nginx.psi
 
+import com.css.nginx.NginxConstants.PATH_ARG_DIRECTIVES
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.css.nginx.NginxConstants.PATH_ARG_DIRECTIVES
 
 /** File paths in directives (include, root, ssl_certificate...) and how nginx would find them in this project. */
 object NginxPaths {

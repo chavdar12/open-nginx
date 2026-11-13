@@ -11,5 +11,6 @@ fun nginxToken(context: PsiElement, text: String): PsiElement {
     val file = PsiFileFactory.getInstance(context.project).createFileFromText("dummy.nginx", NginxLanguage, "x $text;")
     // IncorrectOperationException: rename shows it as a message instead of an IDE error
     val args = PsiTreeUtil.findChildOfType(file, NginxDirective::class.java)?.args
-    return args?.singleOrNull()?.singleOrNull() ?: throw IncorrectOperationException("'$text' is not a single nginx word")
+    return args?.singleOrNull()?.singleOrNull()
+        ?: throw IncorrectOperationException("'$text' is not a single nginx word")
 }

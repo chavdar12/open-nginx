@@ -1,12 +1,13 @@
 package com.css.nginx.psi
 
+import com.css.nginx.NginxConstants.JS_FUNCTION_ARG
+import com.css.nginx.NginxConstants.NAMED_LOCATION_USERS
+import com.css.nginx.NginxConstants.PASS_DIRECTIVES
 import com.css.nginx.NginxConstants.VARIABLE_REF
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.*
-import com.css.nginx.NginxConstants.PASS_DIRECTIVES
-import com.css.nginx.NginxConstants.NAMED_LOCATION_USERS
-import com.css.nginx.NginxConstants.JS_FUNCTION_ARG
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 
 object NginxReferences {
 
@@ -51,14 +52,14 @@ object NginxReferences {
         }
         JS_FUNCTION_ARG[d.directiveName]?.let { args.getOrNull(it)?.singleOrNull() }
             ?.takeIf { it.node.elementType == NginxTypes.WORD && '.' in it.text }?.let { w ->
-            val dot = w.text.lastIndexOf('.')
-            refs += NginxJsFunctionReference(
-                d,
-                TextRange.from(inDirective(w).startOffset + dot + 1, w.text.length - dot - 1),
-                w.text.substring(0, dot),
-                w.text.substring(dot + 1)
-            )
-        }
+                val dot = w.text.lastIndexOf('.')
+                refs += NginxJsFunctionReference(
+                    d,
+                    TextRange.from(inDirective(w).startOffset + dot + 1, w.text.length - dot - 1),
+                    w.text.substring(0, dot),
+                    w.text.substring(dot + 1)
+                )
+            }
         NginxPaths.pathArg(d)?.let { arg ->
             val range = TextRange(inDirective(arg.first()).startOffset, inDirective(arg.last()).endOffset)
             val text = range.substring(d.text)

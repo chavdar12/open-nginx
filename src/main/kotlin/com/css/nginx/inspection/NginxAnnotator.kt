@@ -1,10 +1,15 @@
 package com.css.nginx.inspection
 
+import com.css.nginx.NginxConstants.NAME_VALUE_PARAMETER
+import com.css.nginx.NginxConstants.SHIPPED_INCLUDES
+import com.css.nginx.NginxConstants.VARIABLE_REF
 import com.css.nginx.data.NginxCustomDirectives
 import com.css.nginx.data.NginxDirectives
 import com.css.nginx.highlighting.NginxColors
 import com.css.nginx.inspection.fixes.NginxFix
-import com.css.nginx.NginxConstants.VARIABLE_REF
+import com.css.nginx.inspection.fixes.deleteLine
+import com.css.nginx.inspection.fixes.indentOf
+import com.css.nginx.inspection.fixes.replaceFix
 import com.css.nginx.psi.NginxDeclarations
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxPaths
@@ -12,18 +17,13 @@ import com.css.nginx.psi.NginxTypes
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.text.EditDistance
-import com.css.nginx.NginxConstants.SHIPPED_INCLUDES
-import com.css.nginx.NginxConstants.NAME_VALUE_PARAMETER
-import com.css.nginx.inspection.fixes.replaceFix
-import com.css.nginx.inspection.fixes.indentOf
-import com.css.nginx.inspection.fixes.deleteLine
-import com.intellij.openapi.components.service
 
 class NginxAnnotator : Annotator {
     override fun annotate(e: PsiElement, holder: AnnotationHolder) {

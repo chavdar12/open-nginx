@@ -1,7 +1,10 @@
 package com.css.nginx.psi
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.ResolveResult
 
 /** A use of something declared by name: an upstream in proxy_pass, a $variable, a @named location. */
 class NginxSymbolReference(d: NginxDirective, range: TextRange, private val key: String) :

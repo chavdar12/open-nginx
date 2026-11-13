@@ -1,12 +1,12 @@
 package com.css.nginx.formatter
 
+import com.css.nginx.NginxConstants.ARGUMENT_TOKENS
 import com.css.nginx.psi.NginxTypes
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
-import com.css.nginx.NginxConstants.ARGUMENT_TOKENS
 
 /**
  * One block per PSI node. Only whitespace between tokens is ever changed, and tokens glued together

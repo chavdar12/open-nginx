@@ -2,6 +2,7 @@ package com.css.nginx.inspection
 
 import com.css.nginx.data.NginxDirectives
 import com.css.nginx.inspection.fixes.NginxFix
+import com.css.nginx.inspection.fixes.deleteLine
 import com.css.nginx.psi.NginxDeclarations
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxIncludes
@@ -12,7 +13,6 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.css.nginx.inspection.fixes.deleteLine
 
 /** Directives nginx rejects as "is duplicate", clashing server blocks, and deprecated listen parameters. */
 class NginxDuplicateAnnotator : Annotator {
@@ -86,12 +86,12 @@ class NginxDuplicateAnnotator : Annotator {
         if (DumbService.isDumb(d.project)) return emptyList()
         return NginxDeclarations.projectFiles(d.project)
             .filter { it != file && it.virtualFile?.parent?.let(NginxPaths::baseDir) == base }.flatMap { f ->
-            val top = NginxIncludes.contextOf(f) == "http"
-            PsiTreeUtil.findChildrenOfType(f, NginxDirective::class.java).filter { s ->
-                s.directiveName == "server" && PsiTreeUtil.getParentOfType(s, NginxDirective::class.java)
-                    .let { it?.directiveName == "http" || it == null && top }
+                val top = NginxIncludes.contextOf(f) == "http"
+                PsiTreeUtil.findChildrenOfType(f, NginxDirective::class.java).filter { s ->
+                    s.directiveName == "server" && PsiTreeUtil.getParentOfType(s, NginxDirective::class.java)
+                        .let { it?.directiveName == "http" || it == null && top }
+                }
             }
-        }
     }
 
     /** (normalized address, default_server, listen element) per listen; a server without listen listens on *:80. */

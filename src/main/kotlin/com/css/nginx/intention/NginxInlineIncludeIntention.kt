@@ -1,10 +1,10 @@
 package com.css.nginx.intention
 
+import com.css.nginx.inspection.fixes.indentOf
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxFileReference
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
-import com.css.nginx.inspection.fixes.indentOf
 
 /** Replaces `include x.conf;` by the content of x.conf (only when it names exactly one file). */
 class NginxInlineIncludeIntention : NginxIntention("Inline included file") {

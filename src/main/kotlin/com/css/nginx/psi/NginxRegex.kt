@@ -1,8 +1,8 @@
 package com.css.nginx.psi
 
+import com.css.nginx.NginxConstants.MATCH_OPERATORS
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.css.nginx.NginxConstants.MATCH_OPERATORS
 
 /** Where a directive holds a regular expression: the token and the regex's range inside it. */
 object NginxRegex {

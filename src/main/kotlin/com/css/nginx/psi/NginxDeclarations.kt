@@ -1,5 +1,8 @@
 package com.css.nginx.psi
 
+import com.css.nginx.NginxConstants.KEYED_BLOCKS
+import com.css.nginx.NginxConstants.NAMED_CAPTURE
+import com.css.nginx.NginxConstants.VARIABLE_ARG
 import com.css.nginx.data.NginxDirectives
 import com.css.nginx.lang.NginxFileType
 import com.intellij.openapi.project.DumbService
@@ -13,9 +16,6 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
-import com.css.nginx.NginxConstants.VARIABLE_ARG
-import com.css.nginx.NginxConstants.KEYED_BLOCKS
-import com.css.nginx.NginxConstants.NAMED_CAPTURE
 
 /**
  * Everything a config declares by name, across all nginx files of the project:

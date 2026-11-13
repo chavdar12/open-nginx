@@ -2,7 +2,10 @@ package com.css.nginx.psi
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.*
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiManager
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.PsiTreeUtil
 
 /** `js_content main.hello`: the function `hello` in the file that `js_import main from x.js` (or `js_import main.js`) loads. */

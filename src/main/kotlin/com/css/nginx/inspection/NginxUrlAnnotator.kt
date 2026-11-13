@@ -1,5 +1,7 @@
 package com.css.nginx.inspection
 
+import com.css.nginx.NginxConstants.PASS_SCHEMES
+import com.css.nginx.NginxConstants.PLAIN_NAME
 import com.css.nginx.inspection.fixes.NginxFix
 import com.css.nginx.psi.NginxDeclarations
 import com.css.nginx.psi.NginxDirective
@@ -10,8 +12,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.css.nginx.NginxConstants.PLAIN_NAME
-import com.css.nginx.NginxConstants.PASS_SCHEMES
 
 /** Checks the URL of proxy_pass / grpc_pass / uwsgi_pass for the mistakes `nginx -t` rejects. */
 class NginxUrlAnnotator : Annotator {

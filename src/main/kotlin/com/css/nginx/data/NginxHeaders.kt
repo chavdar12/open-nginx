@@ -1,8 +1,8 @@
 package com.css.nginx.data
 
+import com.css.nginx.NginxConstants.HEADER_NAME_DIRECTIVES
 import com.css.nginx.psi.NginxDirective
 import com.intellij.psi.PsiElement
-import com.css.nginx.NginxConstants.HEADER_NAME_DIRECTIVES
 
 /** Common HTTP headers for hover and completion; hand-written in src/main/resources/nginx/headers.tsv. */
 object NginxHeaders {

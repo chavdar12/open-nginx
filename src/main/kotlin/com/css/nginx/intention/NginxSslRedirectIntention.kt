@@ -1,9 +1,9 @@
 package com.css.nginx.intention
 
+import com.css.nginx.inspection.fixes.indentOf
 import com.css.nginx.psi.NginxDirective
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.util.PsiTreeUtil
-import com.css.nginx.inspection.fixes.indentOf
 
 /** On an HTTPS server block: adds a port-80 server that redirects the same names to https. */
 class NginxSslRedirectIntention : NginxIntention("Add HTTP to HTTPS redirect server") {

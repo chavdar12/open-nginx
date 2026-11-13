@@ -1,5 +1,7 @@
 package com.css.nginx.completion
 
+import com.css.nginx.NginxConstants.DIRECTORY_DIRECTIVES
+import com.css.nginx.NginxConstants.PASS_DIRECTIVES
 import com.css.nginx.data.NginxDirectives
 import com.css.nginx.data.NginxHeaders
 import com.css.nginx.data.NginxMimeTypes
@@ -16,8 +18,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiFile
 import com.intellij.util.ProcessingContext
-import com.css.nginx.NginxConstants.PASS_DIRECTIVES
-import com.css.nginx.NginxConstants.DIRECTORY_DIRECTIVES
 
 /**
  * Directive names for the current block, values, headers, MIME types, and project-wide names: variables, upstreams,

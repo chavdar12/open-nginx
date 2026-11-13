@@ -1,5 +1,7 @@
 package com.css.nginx.inspection
 
+import com.css.nginx.NginxConstants.PCRE_ONLY
+import com.css.nginx.NginxConstants.REGEX_META_CHARS
 import com.css.nginx.highlighting.NginxColors
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxRegex
@@ -10,8 +12,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
-import com.css.nginx.NginxConstants.REGEX_META_CHARS
-import com.css.nginx.NginxConstants.PCRE_ONLY
 
 /** Colors regexes in location ~, rewrite, if, server_name ~ and map keys, and flags ones that do not compile. */
 class NginxRegexAnnotator : Annotator {

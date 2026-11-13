@@ -1,5 +1,11 @@
 package com.css.nginx.inspection
 
+import com.css.nginx.NginxConstants.DECODED_URI_VARIABLE
+import com.css.nginx.NginxConstants.NESTED_QUANTIFIER
+import com.css.nginx.NginxConstants.REDIRECT_CODES
+import com.css.nginx.NginxConstants.USER_CONTROLLED_VARIABLE
+import com.css.nginx.NginxConstants.WEAK_CIPHER
+import com.css.nginx.NginxConstants.WEAK_PROTOCOLS
 import com.css.nginx.inspection.fixes.NginxFix
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxRegex
@@ -10,12 +16,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.css.nginx.NginxConstants.NESTED_QUANTIFIER
-import com.css.nginx.NginxConstants.REDIRECT_CODES
-import com.css.nginx.NginxConstants.WEAK_PROTOCOLS
-import com.css.nginx.NginxConstants.WEAK_CIPHER
-import com.css.nginx.NginxConstants.DECODED_URI_VARIABLE
-import com.css.nginx.NginxConstants.USER_CONTROLLED_VARIABLE
 
 /**
  * Security mistakes in the spirit of gixy (github.com/yandex/gixy): alias traversal, lost add_header, Host spoofing,

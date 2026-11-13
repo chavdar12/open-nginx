@@ -81,7 +81,8 @@ If tests fail with `NoSuchMethodError` after pulling, Gradle's build cache serve
 
 ### Project layout
 
-One class per file. Helper functions live in their own files (`NginxSniffing.kt`, `NginxFixes.kt`, `NginxWhitespace.kt`...)
+One class per file. Helper functions live in their own files (`NginxSniffing.kt`, `NginxFixes.kt`,
+`NginxWhitespace.kt`...)
 and shared constants in `NginxConstants.kt`.
 
 ```

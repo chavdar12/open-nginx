@@ -2,8 +2,8 @@ package com.css.nginx.intention
 
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxPaths
-import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInsight.hint.HintManager
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
@@ -54,7 +54,10 @@ class NginxExtractIncludeIntention : NginxIntention("Extract to include file") {
         val common = lines.drop(1).filter { it.isNotBlank() }.minOfOrNull { it.length - it.trimStart().length } ?: 0
         val file = try {
             dir.createChildData(this, name).also {
-                VfsUtil.saveText(it, (listOf(lines[0]) + lines.drop(1).map { l -> l.drop(common) }).joinToString("\n") + "\n")
+                VfsUtil.saveText(
+                    it,
+                    (listOf(lines[0]) + lines.drop(1).map { l -> l.drop(common) }).joinToString("\n") + "\n"
+                )
             }
         } catch (e: IOException) {  // read-only folder, disk full: leave the config as it was
             HintManager.getInstance().showErrorHint(editor, "Cannot create $name: ${e.message}")
