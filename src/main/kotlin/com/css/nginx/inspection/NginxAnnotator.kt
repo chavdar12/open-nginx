@@ -4,7 +4,7 @@ import com.css.nginx.data.NginxCustomDirectives
 import com.css.nginx.data.NginxDirectives
 import com.css.nginx.highlighting.NginxColors
 import com.css.nginx.inspection.fixes.NginxFix
-import com.css.nginx.lexer.VARIABLE_REF
+import com.css.nginx.NginxConstants.VARIABLE_REF
 import com.css.nginx.psi.NginxDeclarations
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxPaths
@@ -12,28 +12,18 @@ import com.css.nginx.psi.NginxTypes
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.text.EditDistance
-
-/** Files every nginx package ships next to nginx.conf; projects rarely keep copies. */
-private val SHIPPED = setOf(
-    "mime.types",
-    "fastcgi_params",
-    "fastcgi.conf",
-    "proxy_params",
-    "scgi_params",
-    "uwsgi_params",
-    "koi-utf",
-    "koi-win",
-    "win-utf",
-    "snippets/fastcgi-php.conf"
-)
-private val PARAMETER = Regex("""^([a-z_][a-z0-9_]*)=""")
+import com.css.nginx.NginxConstants.SHIPPED_INCLUDES
+import com.css.nginx.NginxConstants.NAME_VALUE_PARAMETER
+import com.css.nginx.inspection.fixes.replaceFix
+import com.css.nginx.inspection.fixes.indentOf
+import com.css.nginx.inspection.fixes.deleteLine
+import com.intellij.openapi.components.service
 
 class NginxAnnotator : Annotator {
     override fun annotate(e: PsiElement, holder: AnnotationHolder) {
@@ -56,7 +46,7 @@ class NginxAnnotator : Annotator {
         if (e.node.elementType == NginxTypes.WORD && e.parent is NginxDirective) {
             // name of a name=value option (levels=1:2, zone=perip, weight=5); only at the start of an argument
             val glued = e.prevSibling !is PsiWhiteSpace
-            val name = PARAMETER.find(e.text)?.groupValues?.get(1)
+            val name = NAME_VALUE_PARAMETER.find(e.text)?.groupValues?.get(1)
             if (!glued && name != null) {
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                     .range(TextRange.from(e.textRange.startOffset, name.length))
@@ -74,7 +64,7 @@ class NginxAnnotator : Annotator {
             if (name in d.project.service<NginxCustomDirectives>().names) return
             // warning, not error: third-party modules add their own directives
             val b = holder.problem(HighlightSeverity.WARNING, "Unknown directive '$name'").range(d.nameElement)
-            closest(name, ctx)?.let { b.withFix(NginxFix.replace("Change to '$it'", d.nameElement, it)) }
+            closest(name, ctx)?.let { b.withFix(replaceFix("Change to '$it'", d.nameElement, it)) }
             b.withFix(
                 NginxFix(
                     "Add '$name' to this project's known directives",
@@ -110,7 +100,7 @@ class NginxAnnotator : Annotator {
                 )
                     .range(TextRange(args[0].first().textRange.startOffset, args[0].last().textRange.endOffset))
                 if (args[0].size == 1) info.values.take(8)
-                    .forEach { b.withFix(NginxFix.replace("Replace with '$it'", args[0][0], it)) }
+                    .forEach { b.withFix(replaceFix("Replace with '$it'", args[0][0], it)) }
                 b.create()
             }
         }
@@ -143,7 +133,7 @@ class NginxAnnotator : Annotator {
     private fun checkInclude(d: NginxDirective, holder: AnnotationHolder) {
         val arg = NginxPaths.pathArg(d) ?: return
         val path = StringUtil.unquoteString(arg.joinToString("") { it.text })
-        if (path.startsWith("/") || NginxPaths.isGlob(path) || path in SHIPPED || NginxPaths.resolve(
+        if (path.startsWith("/") || NginxPaths.isGlob(path) || path in SHIPPED_INCLUDES || NginxPaths.resolve(
                 d.containingFile,
                 path
             ).isNotEmpty()
@@ -172,8 +162,8 @@ class NginxAnnotator : Annotator {
             if (ctx in allowed) return NginxFix("Move to the enclosing '$ctx' block", d) { e, doc ->
                 val target = inner
                 val text = e.text
-                val indent = NginxFix.indentOf(target, doc)
-                NginxFix.deleteLine(e, doc)  // after the target start, so the insert offset below stays valid
+                val indent = indentOf(target, doc)
+                deleteLine(e, doc)  // after the target start, so the insert offset below stays valid
                 doc.insertString(target.textRange.startOffset, "$text\n$indent")
             }
         }

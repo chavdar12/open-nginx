@@ -3,40 +3,17 @@ package com.css.nginx.psi
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.css.nginx.NginxConstants.PATH_ARG_DIRECTIVES
 
 /** File paths in directives (include, root, ssl_certificate...) and how nginx would find them in this project. */
 object NginxPaths {
-    private val SINGLE = setOf(
-        "include",
-        "root",
-        "alias",
-        "auth_basic_user_file",
-        "ssl_certificate",
-        "ssl_certificate_key",
-        "ssl_trusted_certificate",
-        "ssl_client_certificate",
-        "ssl_dhparam",
-        "ssl_crl",
-        "ssl_password_file",
-        "ssl_stapling_file",
-        "ssl_session_ticket_key",
-        "proxy_ssl_certificate",
-        "proxy_ssl_certificate_key",
-        "proxy_ssl_trusted_certificate",
-        "js_path",
-        "geoip2",
-        "geoip_country",
-        "geoip_city",
-        "geoip_org",
-    )
-    val DIRECTORIES = setOf("root", "alias", "js_path")
 
     /** The path argument of [d], or null when it has none or it contains variables (only known at runtime). */
     fun pathArg(d: NginxDirective): List<PsiElement>? {
         val name = d.directiveName
         val args = d.args
         val arg = when {
-            name in SINGLE -> args.firstOrNull()
+            name in PATH_ARG_DIRECTIVES -> args.firstOrNull()
             name == "js_import" -> args.lastOrNull()  // js_import [name from] path
             name.endsWith("_by_lua_file") -> args.firstOrNull { it.singleOrNull()?.node?.elementType != NginxTypes.VARIABLE }
             else -> null

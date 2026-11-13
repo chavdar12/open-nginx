@@ -13,6 +13,9 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
+import com.css.nginx.NginxConstants.VARIABLE_ARG
+import com.css.nginx.NginxConstants.KEYED_BLOCKS
+import com.css.nginx.NginxConstants.NAMED_CAPTURE
 
 /**
  * Everything a config declares by name, across all nginx files of the project:
@@ -20,21 +23,6 @@ import com.intellij.psi.util.PsiTreeUtil
  */
 object NginxDeclarations {
     class Index(val byName: Map<String, List<NginxDirective>>, val captures: Set<String>)
-
-    /** directive -> index of the argument holding the declared variable, e.g. `map $uri $new` declares $new */
-    private val VARIABLE_ARG = mapOf(
-        "set" to 0,
-        "map" to 1,
-        "split_clients" to 1,
-        "js_var" to 0,
-        "set_by_lua" to 0,
-        "set_by_lua_block" to 0,
-        "set_by_lua_file" to 0,
-    )
-
-    /** blocks whose entries are `key value;` pairs, not directives: `map $a $b { foo $c; }` uses $c */
-    private val KEYED_BLOCKS = setOf("map", "geo", "split_clients", "types", "charset_map", "match")
-    private val CAPTURE = Regex("""\(\?P?<([A-Za-z_]\w*)>""")
 
     fun nameIdentifier(d: NginxDirective): PsiElement? {
         val name = d.directiveName
@@ -91,7 +79,7 @@ object NginxDeclarations {
         val named = PsiTreeUtil.findChildrenOfType(file, NginxDirective::class.java)
             .mapNotNull { d -> d.declaredKey?.let { it to d } }
         // regex named captures (?<name>...) define $name too; they only silence the unknown-variable check
-        val captures = CAPTURE.findAll(file.text).map { it.groupValues[1] }.toSet()
+        val captures = NAMED_CAPTURE.findAll(file.text).map { it.groupValues[1] }.toSet()
         CachedValueProvider.Result.create(named to captures, file)
     }
 

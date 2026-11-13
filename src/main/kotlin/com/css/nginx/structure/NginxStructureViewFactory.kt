@@ -15,6 +15,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.css.nginx.NginxConstants.STRUCTURE_DIRECTIVES
 
 /** Outline of blocks (http, server, location, upstream...) plus the include, listen and server_name lines that identify them. */
 class NginxStructureViewFactory : PsiStructureViewFactory {
@@ -39,7 +40,7 @@ class NginxStructureViewFactory : PsiStructureViewFactory {
                 is NginxDirective -> e.directives
                 else -> emptyList()
             }
-            return children.filter { it.block != null || it.directiveName in SHOWN }.map(::Element).toTypedArray()
+            return children.filter { it.block != null || it.directiveName in STRUCTURE_DIRECTIVES }.map(::Element).toTypedArray()
         }
 
         override fun getPresentation(): ItemPresentation = PresentationData(
@@ -54,5 +55,3 @@ class NginxStructureViewFactory : PsiStructureViewFactory {
         )
     }
 }
-
-private val SHOWN = setOf("include", "listen", "server_name")

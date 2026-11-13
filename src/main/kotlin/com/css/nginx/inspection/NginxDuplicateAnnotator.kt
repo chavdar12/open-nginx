@@ -12,6 +12,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.css.nginx.inspection.fixes.deleteLine
 
 /** Directives nginx rejects as "is duplicate", clashing server blocks, and deprecated listen parameters. */
 class NginxDuplicateAnnotator : Annotator {
@@ -21,7 +22,7 @@ class NginxDuplicateAnnotator : Annotator {
         if (d.directiveName in NginxDirectives.single && siblings.takeWhile { it != d }
                 .any { it.directiveName == d.directiveName }) {
             holder.problem(HighlightSeverity.ERROR, "'${d.directiveName}' directive is duplicate").range(d.nameElement)
-                .withFix(NginxFix("Remove duplicate", d, NginxFix::deleteLine)).create()
+                .withFix(NginxFix("Remove duplicate", d, ::deleteLine)).create()
         }
         if (d.directiveName == "listen") for (arg in d.args.drop(1)) {
             val text = arg.joinToString("") { it.text }

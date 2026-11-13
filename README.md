@@ -81,8 +81,12 @@ If tests fail with `NoSuchMethodError` after pulling, Gradle's build cache serve
 
 ### Project layout
 
+One class per file. Helper functions live in their own files (`NginxSniffing.kt`, `NginxFixes.kt`, `NginxWhitespace.kt`...)
+and shared constants in `NginxConstants.kt`.
+
 ```
 src/main/kotlin/com/css/nginx/
+  NginxConstants.kt       shared names, patterns and directive sets
   lexer/ parser/ psi/     tokens, parse tree, references and cross-file declarations
   completion/ docs/       completion and hover docs
   inspection/             checks and their quick fixes

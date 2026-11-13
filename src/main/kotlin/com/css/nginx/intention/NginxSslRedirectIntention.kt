@@ -1,9 +1,9 @@
 package com.css.nginx.intention
 
-import com.css.nginx.inspection.fixes.NginxFix
 import com.css.nginx.psi.NginxDirective
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.util.PsiTreeUtil
+import com.css.nginx.inspection.fixes.indentOf
 
 /** On an HTTPS server block: adds a port-80 server that redirects the same names to https. */
 class NginxSslRedirectIntention : NginxIntention("Add HTTP to HTTPS redirect server") {
@@ -35,7 +35,7 @@ class NginxSslRedirectIntention : NginxIntention("Add HTTP to HTTPS redirect ser
 
     override fun apply(d: NginxDirective, editor: Editor) {
         val doc = editor.document
-        val i = NginxFix.indentOf(d, doc)
+        val i = indentOf(d, doc)
         val names = names(d).ifEmpty { listOf("_") }.joinToString(" ")
         doc.insertString(
             d.textRange.endOffset,

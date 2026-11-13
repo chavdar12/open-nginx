@@ -10,12 +10,14 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.css.nginx.NginxConstants.PLAIN_NAME
+import com.css.nginx.NginxConstants.PASS_SCHEMES
 
 /** Checks the URL of proxy_pass / grpc_pass / uwsgi_pass for the mistakes `nginx -t` rejects. */
 class NginxUrlAnnotator : Annotator {
     override fun annotate(e: PsiElement, holder: AnnotationHolder) {
         val d = e as? NginxDirective ?: return
-        val schemes = SCHEMES[d.directiveName] ?: return
+        val schemes = PASS_SCHEMES[d.directiveName] ?: return
         val arg = d.args.firstOrNull() ?: return
         val url = StringUtil.unquoteString(arg.joinToString("") { it.text })
         if ('$' in url) return  // nginx only parses URLs with variables at runtime (corpus: proxy_pass http:/$uri is valid)
@@ -98,11 +100,3 @@ class NginxUrlAnnotator : Annotator {
             .map { it.directiveName }
 
 }
-
-private val PLAIN_NAME = Regex("[A-Za-z0-9_-]+")
-
-private val SCHEMES = mapOf(
-    "proxy_pass" to listOf("http", "https"),
-    "grpc_pass" to listOf("grpc", "grpcs"),
-    "uwsgi_pass" to listOf("uwsgi", "suwsgi"),
-)

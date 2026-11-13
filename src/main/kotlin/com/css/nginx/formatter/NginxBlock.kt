@@ -6,7 +6,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
-import com.intellij.psi.tree.TokenSet
+import com.css.nginx.NginxConstants.ARGUMENT_TOKENS
 
 /**
  * One block per PSI node. Only whitespace between tokens is ever changed, and tokens glued together
@@ -37,7 +37,7 @@ class NginxBlock(
                 // wrapped arguments line up under the last argument of the first line, like log_format in the nginx docs
                 val wrapAlign = if (style.nginx.ALIGN_MULTILINE_ARGUMENTS) Alignment.createAlignment() else null
                 val argStarts =
-                    kids.indices.filter { i -> i > 0 && kids[i].elementType in ARGS && kids[i - 1].textRange.endOffset != kids[i].startOffset }
+                    kids.indices.filter { i -> i > 0 && kids[i].elementType in ARGUMENT_TOKENS && kids[i - 1].textRange.endOffset != kids[i].startOffset }
                 val firstWrapped = argStarts.firstOrNull { startsLine(kids[it]) }
                 val anchor = argStarts.lastOrNull { firstWrapped == null || it < firstWrapped }
                 kids.mapIndexed { i, k ->
@@ -81,7 +81,7 @@ class NginxBlock(
             if (k.elementType == NginxTypes.COMMENT && !startsLine(k)) continue  // trailing comment
             val alignable =
                 k.elementType == NginxTypes.DIRECTIVE && '\n' !in k.text && k.findChildByType(NginxTypes.BLOCK) == null &&
-                        kids(k).getOrNull(1)?.elementType in ARGS
+                        kids(k).getOrNull(1)?.elementType in ARGUMENT_TOKENS
             if (!alignable || blankLineBefore(k)) current = null
             if (alignable) groups[k] = current ?: Alignment.createAlignment(true).also { current = it }
         }
@@ -134,14 +134,4 @@ class NginxBlock(
 
     override fun isIncomplete() =
         myNode.elementType == NginxTypes.BLOCK && myNode.lastChildNode?.elementType != NginxTypes.RBRACE
-
-    private companion object {
-        val ARGS = TokenSet.create(NginxTypes.WORD, NginxTypes.STRING, NginxTypes.VARIABLE)
-
-        fun whitespaceBefore(n: ASTNode) = n.treePrev?.takeIf { it.elementType == TokenType.WHITE_SPACE }?.text ?: ""
-        fun startsLine(n: ASTNode) =
-            n.treePrev == null || '\n' in whitespaceBefore(n) || n.treePrev.elementType == NginxTypes.COMMENT
-
-        fun blankLineBefore(n: ASTNode) = whitespaceBefore(n).count { it == '\n' } > 1
-    }
 }

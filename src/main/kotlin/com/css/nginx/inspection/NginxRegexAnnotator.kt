@@ -10,6 +10,8 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
+import com.css.nginx.NginxConstants.REGEX_META_CHARS
+import com.css.nginx.NginxConstants.PCRE_ONLY
 
 /** Colors regexes in location ~, rewrite, if, server_name ~ and map keys, and flags ones that do not compile. */
 class NginxRegexAnnotator : Annotator {
@@ -39,7 +41,7 @@ class NginxRegexAnnotator : Annotator {
                         color(i, 1, NginxColors.REGEX_META); inClass = true
                     }
 
-                    c in META -> color(i, 1, NginxColors.REGEX_META)
+                    c in REGEX_META_CHARS -> color(i, 1, NginxColors.REGEX_META)
                 }
                 i++
             }
@@ -54,6 +56,3 @@ class NginxRegexAnnotator : Annotator {
         }
     }
 }
-
-private const val META = "^$|()*+?.{}"
-private val PCRE_ONLY = Regex("""\(\?\||\[\[:|\\K|\(\*|\(\?R\)|\(\?\d""")
