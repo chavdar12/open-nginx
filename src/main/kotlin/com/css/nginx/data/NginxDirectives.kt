@@ -10,16 +10,19 @@ object NginxDirectives {
     class Info(
         val name: String,
         /** empty = allowed anywhere (include) */
-        val contexts: Set<String>, val min: Int, val max: Int?, val values: Set<String>,
+        val contexts: Set<String>,
+        val min: Int, val max: Int?, val values: Set<String>,
         /** HTML; each syntax form is one line, separated by <br> */
-        val url: String, val default: String, val syntax: String, val doc: String,
+        val url: String,
+        val default: String, val syntax: String, val doc: String,
     ) {
         /** First syntax form as plain text, for completion */
         val plainSyntax get() = StringUtil.unescapeXmlEntities(StringUtil.removeHtmlTags(syntax.substringBefore("<br>")))
 
         /** ngx_http_gzip_module.html -> http_gzip, github.com/openresty/headers-more-nginx-module -> headers-more */
-        val module get() = url.substringBefore('#').substringAfterLast('/').substringBefore('.')
-            .removePrefix("ngx_").removeSuffix("_module").removeSuffix("-nginx-module")
+        val module
+            get() = url.substringBefore('#').substringAfterLast('/').substringBefore('.')
+                .removePrefix("ngx_").removeSuffix("_module").removeSuffix("-nginx-module")
     }
 
     class Variable(val name: String, val url: String, val doc: String)
@@ -29,22 +32,24 @@ object NginxDirectives {
     }
 
     /** Core nginx directives, plus popular third-party modules (OpenResty, headers-more, brotli, geoip2...); core wins on clashes. */
-    val all: Map<String, Info> = (rows("/nginx/thirdparty.tsv").map(::escapeDocs) + rows("/nginx/directives.tsv")).associate {
-        it[0] to Info(
-            it[0],
-            it[1].split(',').filter(String::isNotEmpty).toSet(),
-            it[2].toInt(),
-            it[3].toIntOrNull(),
-            it[4].split(',').filter(String::isNotEmpty).toSet(),
-            it[5],
-            it[6],
-            it[7],
-            it[8],
-        )
-    }
+    val all: Map<String, Info> =
+        (rows("/nginx/thirdparty.tsv").map(::escapeDocs) + rows("/nginx/directives.tsv")).associate {
+            it[0] to Info(
+                it[0],
+                it[1].split(',').filter(String::isNotEmpty).toSet(),
+                it[2].toInt(),
+                it[3].toIntOrNull(),
+                it[4].split(',').filter(String::isNotEmpty).toSet(),
+                it[5],
+                it[6],
+                it[7],
+                it[8],
+            )
+        }
 
     /** thirdparty.tsv is plain text taken from READMEs, directives.tsv is HTML already */
-    private fun escapeDocs(row: List<String>) = row.mapIndexed { i, v -> if (i >= 7) StringUtil.escapeXmlEntities(v) else v }
+    private fun escapeDocs(row: List<String>) =
+        row.mapIndexed { i, v -> if (i >= 7) StringUtil.escapeXmlEntities(v) else v }
 
     /** Built-in variables; a name ending in _ is a prefix family such as arg_ for $arg_name. */
     val variables: Map<String, Variable> =

@@ -7,10 +7,27 @@ import com.intellij.psi.PsiFile
 /** File paths in directives (include, root, ssl_certificate...) and how nginx would find them in this project. */
 object NginxPaths {
     private val SINGLE = setOf(
-        "include", "root", "alias", "auth_basic_user_file", "ssl_certificate", "ssl_certificate_key", "ssl_trusted_certificate",
-        "ssl_client_certificate", "ssl_dhparam", "ssl_crl", "ssl_password_file", "ssl_stapling_file", "ssl_session_ticket_key",
-        "proxy_ssl_certificate", "proxy_ssl_certificate_key", "proxy_ssl_trusted_certificate", "js_path", "geoip2",
-        "geoip_country", "geoip_city", "geoip_org",
+        "include",
+        "root",
+        "alias",
+        "auth_basic_user_file",
+        "ssl_certificate",
+        "ssl_certificate_key",
+        "ssl_trusted_certificate",
+        "ssl_client_certificate",
+        "ssl_dhparam",
+        "ssl_crl",
+        "ssl_password_file",
+        "ssl_stapling_file",
+        "ssl_session_ticket_key",
+        "proxy_ssl_certificate",
+        "proxy_ssl_certificate_key",
+        "proxy_ssl_trusted_certificate",
+        "js_path",
+        "geoip2",
+        "geoip_country",
+        "geoip_city",
+        "geoip_org",
     )
     val DIRECTORIES = setOf("root", "alias", "js_path")
 
@@ -39,7 +56,8 @@ object NginxPaths {
         val segments = path.split('/').filter { it.isNotEmpty() }
         if (segments.isEmpty()) return emptyList()
         val bases = listOf(baseDir(own), own).distinct()
-        if (!path.startsWith("/")) return bases.firstNotNullOfOrNull { b -> match(b, segments).ifEmpty { null } }.orEmpty()
+        if (!path.startsWith("/")) return bases.firstNotNullOfOrNull { b -> match(b, segments).ifEmpty { null } }
+            .orEmpty()
         for (drop in segments.indices) {
             val tail = segments.drop(drop)
             bases.firstNotNullOfOrNull { b -> match(b, tail).ifEmpty { null } }?.let { return it }
@@ -58,9 +76,12 @@ object NginxPaths {
             seg == "." -> match(dir, rest)
             seg == ".." -> dir.parent?.let { match(it, rest) }.orEmpty()
             isGlob(seg) -> {
-                val re = Regex(seg.map { if (it == '*') "[^/]*" else if (it == '?') "." else if (it in "[]") "$it" else Regex.escape("$it") }.joinToString(""))
+                val re = Regex(seg.map {
+                    if (it == '*') "[^/]*" else if (it == '?') "." else if (it in "[]") "$it" else Regex.escape("$it")
+                }.joinToString(""))
                 dir.children.filter { re.matches(it.name) }.sortedBy { it.name }.flatMap { match(it, rest) }
             }
+
             else -> dir.findChild(seg)?.let { match(it, rest) }.orEmpty()
         }
     }

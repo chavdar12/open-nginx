@@ -1,11 +1,11 @@
 package com.css.nginx.psi
 
+import com.css.nginx.lang.NginxLanguage
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil
-import com.css.nginx.lang.NginxLanguage
 
 /** Rewrites part of one token in a directive, e.g. the host in `proxy_pass http://app/x;` when its upstream is renamed. */
 class NginxDirectiveManipulator : AbstractElementManipulator<NginxDirective>() {

@@ -22,10 +22,15 @@ object NginxIncludes {
                 for (d in PsiTreeUtil.findChildrenOfType(f, NginxDirective::class.java)) {
                     if (d.directiveName != "include") continue
                     val arg = NginxPaths.pathArg(d) ?: continue
-                    NginxPaths.resolve(f, StringUtil.unquoteString(arg.joinToString("") { it.text })).forEach { m.getOrPut(it, ::mutableListOf).add(d) }
+                    NginxPaths.resolve(f, StringUtil.unquoteString(arg.joinToString("") { it.text }))
+                        .forEach { m.getOrPut(it, ::mutableListOf).add(d) }
                 }
             }
-            CachedValueProvider.Result.create(m, PsiModificationTracker.getInstance(project), VirtualFileManager.VFS_STRUCTURE_MODIFICATIONS)
+            CachedValueProvider.Result.create(
+                m,
+                PsiModificationTracker.getInstance(project),
+                VirtualFileManager.VFS_STRUCTURE_MODIFICATIONS
+            )
         }
         return map[vf].orEmpty()
     }

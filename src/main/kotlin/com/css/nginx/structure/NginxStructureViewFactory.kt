@@ -2,16 +2,16 @@ package com.css.nginx.structure
 
 import com.css.nginx.psi.NginxDirective
 import com.css.nginx.psi.NginxFile
+import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.structureView.StructureViewModel
 import com.intellij.ide.structureView.StructureViewModelBase
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.structureView.TreeBasedStructureViewBuilder
-import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.smartTree.TreeElement
-import com.intellij.navigation.ItemPresentation
-import com.intellij.pom.Navigatable
 import com.intellij.lang.PsiStructureViewFactory
+import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.editor.Editor
+import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
@@ -22,7 +22,8 @@ class NginxStructureViewFactory : PsiStructureViewFactory {
         override fun createStructureViewModel(editor: Editor?): StructureViewModel =
             object : StructureViewModelBase(file, editor, Element(file)), StructureViewModel.ElementInfoProvider {
                 override fun isAlwaysShowsPlus(element: StructureViewTreeElement) = false
-                override fun isAlwaysLeaf(element: StructureViewTreeElement) = (element.value as? NginxDirective)?.block == null
+                override fun isAlwaysLeaf(element: StructureViewTreeElement) =
+                    (element.value as? NginxDirective)?.block == null
             }.withSuitableClasses(NginxDirective::class.java)
     }
 
@@ -43,9 +44,13 @@ class NginxStructureViewFactory : PsiStructureViewFactory {
 
         override fun getPresentation(): ItemPresentation = PresentationData(
             when (e) {
-                is NginxDirective -> (listOf(e.directiveName) + e.args.map { a -> a.joinToString("") { it.text } }).joinToString(" ")
+                is NginxDirective -> (listOf(e.directiveName) + e.args.map { a -> a.joinToString("") { it.text } }).joinToString(
+                    " "
+                )
+
                 else -> (e as? PsiFile)?.name
-            }, null, null, null,
+            },
+            null, null, null,
         )
     }
 }

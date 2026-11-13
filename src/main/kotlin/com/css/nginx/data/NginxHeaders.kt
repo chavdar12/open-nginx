@@ -8,9 +8,11 @@ object NginxHeaders {
     class Header(val name: String, val url: String, val doc: String)
 
     /** Keyed by lower-case name: header names are case-insensitive. */
-    val all: Map<String, Header> = javaClass.getResourceAsStream("/nginx/headers.tsv")!!.bufferedReader().useLines { lines ->
-        lines.filterNot { it.startsWith("#") }.map { it.split('\t') }.associate { it[0].lowercase() to Header(it[0], it[1], it[2]) }
-    }
+    val all: Map<String, Header> =
+        javaClass.getResourceAsStream("/nginx/headers.tsv")!!.bufferedReader().useLines { lines ->
+            lines.filterNot { it.startsWith("#") }.map { it.split('\t') }
+                .associate { it[0].lowercase() to Header(it[0], it[1], it[2]) }
+        }
 
     /** Directives whose first argument is a header name. */
     private val DIRECTIVES = setOf(

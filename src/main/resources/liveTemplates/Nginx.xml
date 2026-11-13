@@ -1,71 +1,92 @@
 <templateSet group="Nginx">
-  <template name="proxy" value="location $PATH$ {&#10;    proxy_pass http://$UPSTREAM$;&#10;    proxy_http_version 1.1;&#10;    proxy_set_header Host $$host;&#10;    proxy_set_header X-Real-IP $$remote_addr;&#10;    proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;&#10;    proxy_set_header X-Forwarded-Proto $$scheme;&#10;    $END$&#10;}" description="Reverse proxy location" toReformat="true" toShortenFQNames="false">
-    <variable name="PATH" expression="" defaultValue="&quot;/&quot;" alwaysStopAt="true"/>
-    <variable name="UPSTREAM" expression="" defaultValue="&quot;backend&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="upstream" value="upstream $NAME$ {&#10;    server $HOST$;&#10;    keepalive 32;&#10;}" description="Upstream with keepalive" toReformat="true" toShortenFQNames="false">
-    <variable name="NAME" expression="" defaultValue="&quot;backend&quot;" alwaysStopAt="true"/>
-    <variable name="HOST" expression="" defaultValue="&quot;127.0.0.1:8080&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="ssl" value="server {&#10;    listen 443 ssl;&#10;    listen [::]:443 ssl;&#10;    http2 on;&#10;    server_name $NAME$;&#10;&#10;    ssl_certificate /etc/letsencrypt/live/$NAME$/fullchain.pem;&#10;    ssl_certificate_key /etc/letsencrypt/live/$NAME$/privkey.pem;&#10;    ssl_protocols TLSv1.2 TLSv1.3;&#10;    ssl_session_cache shared:SSL:10m;&#10;    ssl_session_timeout 1d;&#10;    add_header Strict-Transport-Security &quot;max-age=63072000&quot; always;&#10;&#10;    $END$&#10;}" description="HTTPS server with modern TLS" toReformat="true" toShortenFQNames="false">
-    <variable name="NAME" expression="" defaultValue="&quot;example.com&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="redirect" value="server {&#10;    listen 80;&#10;    listen [::]:80;&#10;    server_name $NAME$;&#10;    return 301 https://$$host$$request_uri;&#10;}" description="HTTP to HTTPS redirect server" toReformat="true" toShortenFQNames="false">
-    <variable name="NAME" expression="" defaultValue="&quot;example.com&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="ws" value="location $PATH$ {&#10;    proxy_pass http://$UPSTREAM$;&#10;    proxy_http_version 1.1;&#10;    proxy_set_header Upgrade $$http_upgrade;&#10;    proxy_set_header Connection &quot;upgrade&quot;;&#10;    proxy_set_header Host $$host;&#10;    proxy_read_timeout 3600s;&#10;}" description="WebSocket proxy location" toReformat="true" toShortenFQNames="false">
-    <variable name="PATH" expression="" defaultValue="&quot;/ws/&quot;" alwaysStopAt="true"/>
-    <variable name="UPSTREAM" expression="" defaultValue="&quot;backend&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="php" value="location ~ \.php$$ {&#10;    try_files $$uri =404;&#10;    fastcgi_split_path_info ^(.+\.php)(/.+)$$;&#10;    fastcgi_pass $SOCKET$;&#10;    fastcgi_index index.php;&#10;    include fastcgi_params;&#10;    fastcgi_param SCRIPT_FILENAME $$document_root$$fastcgi_script_name;&#10;}" description="PHP-FPM location" toReformat="true" toShortenFQNames="false">
-    <variable name="SOCKET" expression="" defaultValue="&quot;unix:/run/php/php-fpm.sock&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="cors" value="map $$http_origin $$cors_origin {&#10;    default &quot;&quot;;&#10;    &quot;~^https://$DOMAIN$$$&quot; $$http_origin;&#10;}&#10;&#10;# inside the location:&#10;add_header Access-Control-Allow-Origin $$cors_origin always;&#10;add_header Access-Control-Allow-Methods &quot;GET, POST, OPTIONS&quot; always;&#10;add_header Access-Control-Allow-Headers &quot;Authorization, Content-Type&quot; always;&#10;if ($$request_method = OPTIONS) {&#10;    return 204;&#10;}" description="CORS for an allowed origin" toReformat="true" toShortenFQNames="false">
-    <variable name="DOMAIN" expression="" defaultValue="&quot;example\\.com&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="cache" value="proxy_cache_path /var/cache/nginx/$ZONE$ levels=1:2 keys_zone=$ZONE$:10m max_size=1g inactive=60m use_temp_path=off;&#10;&#10;location $PATH$ {&#10;    proxy_cache $ZONE$;&#10;    proxy_cache_valid 200 302 10m;&#10;    proxy_cache_valid 404 1m;&#10;    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;&#10;    add_header X-Cache-Status $$upstream_cache_status;&#10;    proxy_pass http://$UPSTREAM$;&#10;}" description="Proxy cache zone and location" toReformat="true" toShortenFQNames="false">
-    <variable name="ZONE" expression="" defaultValue="&quot;app_cache&quot;" alwaysStopAt="true"/>
-    <variable name="PATH" expression="" defaultValue="&quot;/&quot;" alwaysStopAt="true"/>
-    <variable name="UPSTREAM" expression="" defaultValue="&quot;backend&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="static" value="location ~* \.(?:css|js|jpg|jpeg|gif|png|svg|ico|webp|woff2?)$$ {&#10;    expires 30d;&#10;    add_header Cache-Control &quot;public, immutable&quot;;&#10;    access_log off;&#10;}" description="Static files with long caching" toReformat="true" toShortenFQNames="false">
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="gzip" value="gzip on;&#10;gzip_comp_level 5;&#10;gzip_min_length 256;&#10;gzip_proxied any;&#10;gzip_vary on;&#10;gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;" description="Gzip compression" toReformat="true" toShortenFQNames="false">
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
-  <template name="spa" value="location / {&#10;    root $ROOT$;&#10;    try_files $$uri $$uri/ /index.html;&#10;}" description="Single-page app fallback to index.html" toReformat="true" toShortenFQNames="false">
-    <variable name="ROOT" expression="" defaultValue="&quot;/usr/share/nginx/html&quot;" alwaysStopAt="true"/>
-    <context>
-      <option name="NGINX" value="true"/>
-    </context>
-  </template>
+    <template name="proxy"
+              value="location $PATH$ {&#10;    proxy_pass http://$UPSTREAM$;&#10;    proxy_http_version 1.1;&#10;    proxy_set_header Host $$host;&#10;    proxy_set_header X-Real-IP $$remote_addr;&#10;    proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;&#10;    proxy_set_header X-Forwarded-Proto $$scheme;&#10;    $END$&#10;}"
+              description="Reverse proxy location" toReformat="true" toShortenFQNames="false">
+        <variable name="PATH" expression="" defaultValue="&quot;/&quot;" alwaysStopAt="true"/>
+        <variable name="UPSTREAM" expression="" defaultValue="&quot;backend&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="upstream" value="upstream $NAME$ {&#10;    server $HOST$;&#10;    keepalive 32;&#10;}"
+              description="Upstream with keepalive" toReformat="true" toShortenFQNames="false">
+        <variable name="NAME" expression="" defaultValue="&quot;backend&quot;" alwaysStopAt="true"/>
+        <variable name="HOST" expression="" defaultValue="&quot;127.0.0.1:8080&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="ssl"
+              value="server {&#10;    listen 443 ssl;&#10;    listen [::]:443 ssl;&#10;    http2 on;&#10;    server_name $NAME$;&#10;&#10;    ssl_certificate /etc/letsencrypt/live/$NAME$/fullchain.pem;&#10;    ssl_certificate_key /etc/letsencrypt/live/$NAME$/privkey.pem;&#10;    ssl_protocols TLSv1.2 TLSv1.3;&#10;    ssl_session_cache shared:SSL:10m;&#10;    ssl_session_timeout 1d;&#10;    add_header Strict-Transport-Security &quot;max-age=63072000&quot; always;&#10;&#10;    $END$&#10;}"
+              description="HTTPS server with modern TLS" toReformat="true" toShortenFQNames="false">
+        <variable name="NAME" expression="" defaultValue="&quot;example.com&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="redirect"
+              value="server {&#10;    listen 80;&#10;    listen [::]:80;&#10;    server_name $NAME$;&#10;    return 301 https://$$host$$request_uri;&#10;}"
+              description="HTTP to HTTPS redirect server" toReformat="true" toShortenFQNames="false">
+        <variable name="NAME" expression="" defaultValue="&quot;example.com&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="ws"
+              value="location $PATH$ {&#10;    proxy_pass http://$UPSTREAM$;&#10;    proxy_http_version 1.1;&#10;    proxy_set_header Upgrade $$http_upgrade;&#10;    proxy_set_header Connection &quot;upgrade&quot;;&#10;    proxy_set_header Host $$host;&#10;    proxy_read_timeout 3600s;&#10;}"
+              description="WebSocket proxy location" toReformat="true" toShortenFQNames="false">
+        <variable name="PATH" expression="" defaultValue="&quot;/ws/&quot;" alwaysStopAt="true"/>
+        <variable name="UPSTREAM" expression="" defaultValue="&quot;backend&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="php"
+              value="location ~ \.php$$ {&#10;    try_files $$uri =404;&#10;    fastcgi_split_path_info ^(.+\.php)(/.+)$$;&#10;    fastcgi_pass $SOCKET$;&#10;    fastcgi_index index.php;&#10;    include fastcgi_params;&#10;    fastcgi_param SCRIPT_FILENAME $$document_root$$fastcgi_script_name;&#10;}"
+              description="PHP-FPM location" toReformat="true" toShortenFQNames="false">
+        <variable name="SOCKET" expression="" defaultValue="&quot;unix:/run/php/php-fpm.sock&quot;"
+                  alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="cors"
+              value="map $$http_origin $$cors_origin {&#10;    default &quot;&quot;;&#10;    &quot;~^https://$DOMAIN$$$&quot; $$http_origin;&#10;}&#10;&#10;# inside the location:&#10;add_header Access-Control-Allow-Origin $$cors_origin always;&#10;add_header Access-Control-Allow-Methods &quot;GET, POST, OPTIONS&quot; always;&#10;add_header Access-Control-Allow-Headers &quot;Authorization, Content-Type&quot; always;&#10;if ($$request_method = OPTIONS) {&#10;    return 204;&#10;}"
+              description="CORS for an allowed origin" toReformat="true" toShortenFQNames="false">
+        <variable name="DOMAIN" expression="" defaultValue="&quot;example\\.com&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="cache"
+              value="proxy_cache_path /var/cache/nginx/$ZONE$ levels=1:2 keys_zone=$ZONE$:10m max_size=1g inactive=60m use_temp_path=off;&#10;&#10;location $PATH$ {&#10;    proxy_cache $ZONE$;&#10;    proxy_cache_valid 200 302 10m;&#10;    proxy_cache_valid 404 1m;&#10;    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;&#10;    add_header X-Cache-Status $$upstream_cache_status;&#10;    proxy_pass http://$UPSTREAM$;&#10;}"
+              description="Proxy cache zone and location" toReformat="true" toShortenFQNames="false">
+        <variable name="ZONE" expression="" defaultValue="&quot;app_cache&quot;" alwaysStopAt="true"/>
+        <variable name="PATH" expression="" defaultValue="&quot;/&quot;" alwaysStopAt="true"/>
+        <variable name="UPSTREAM" expression="" defaultValue="&quot;backend&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="static"
+              value="location ~* \.(?:css|js|jpg|jpeg|gif|png|svg|ico|webp|woff2?)$$ {&#10;    expires 30d;&#10;    add_header Cache-Control &quot;public, immutable&quot;;&#10;    access_log off;&#10;}"
+              description="Static files with long caching" toReformat="true" toShortenFQNames="false">
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="gzip"
+              value="gzip on;&#10;gzip_comp_level 5;&#10;gzip_min_length 256;&#10;gzip_proxied any;&#10;gzip_vary on;&#10;gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;"
+              description="Gzip compression" toReformat="true" toShortenFQNames="false">
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
+    <template name="spa" value="location / {&#10;    root $ROOT$;&#10;    try_files $$uri $$uri/ /index.html;&#10;}"
+              description="Single-page app fallback to index.html" toReformat="true" toShortenFQNames="false">
+        <variable name="ROOT" expression="" defaultValue="&quot;/usr/share/nginx/html&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="NGINX" value="true"/>
+        </context>
+    </template>
 </templateSet>

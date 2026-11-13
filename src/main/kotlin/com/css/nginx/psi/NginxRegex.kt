@@ -11,10 +11,15 @@ object NginxRegex {
         val args = d.args
         fun text(a: List<PsiElement>) = a.joinToString("") { it.text }
         val tokens: List<Pair<PsiElement, Int>> = when (d.directiveName) {  // token, chars to skip at its start
-            "location" -> if (args.size == 2 && text(args[0]) in setOf("~", "~*")) listOfNotNull(args[1].singleOrNull()?.let { it to 0 }) else emptyList()
+            "location" -> if (args.size == 2 && text(args[0]) in setOf("~", "~*")) listOfNotNull(
+                args[1].singleOrNull()?.let { it to 0 }) else emptyList()
+
             "rewrite" -> listOfNotNull(args.firstOrNull()?.singleOrNull()?.let { it to 0 })
             "if" -> args.zipWithNext().filter { text(it.first) in MATCH_OPERATORS }.map { it.second.first() to 0 }
-            "server_name" -> args.mapNotNull { a -> a.singleOrNull()?.takeIf { it.text.startsWith("~") }?.let { it to 1 } }
+            "server_name" -> args.mapNotNull { a ->
+                a.singleOrNull()?.takeIf { it.text.startsWith("~") }?.let { it to 1 }
+            }
+
             else -> {
                 // map / split keys: `~^/api 1;` inside map { }
                 val parent = d.parent?.parent as? NginxDirective
@@ -24,9 +29,11 @@ object NginxRegex {
         }
         return tokens.mapNotNull { (t, skip) ->
             var range = TextRange(skip, t.textLength)
-            if (t.node.elementType == NginxTypes.STRING && t.textLength >= 2 + skip) range = TextRange(skip + 1, t.textLength - 1)
+            if (t.node.elementType == NginxTypes.STRING && t.textLength >= 2 + skip) range =
+                TextRange(skip + 1, t.textLength - 1)
             // `if ($uri ~ ^/x)`: the closing paren is glued to the regex
-            if (d.directiveName == "if" && t.text.endsWith(")") && t.node.elementType != NginxTypes.STRING) range = TextRange(range.startOffset, range.endOffset - 1)
+            if (d.directiveName == "if" && t.text.endsWith(")") && t.node.elementType != NginxTypes.STRING) range =
+                TextRange(range.startOffset, range.endOffset - 1)
             (t to range).takeIf { !range.isEmpty }
         }
     }

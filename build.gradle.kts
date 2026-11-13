@@ -16,8 +16,14 @@ dependencies {
         testFramework(TestFrameworkType.Platform)
         testBundledModule("intellij.spellchecker")
         testBundledPlugin("tanvd.grazi") // spellcheck inspection lives in Grazie
-        testPlugin("com.cppcxy.Intellij-EmmyLua", "0.24.0.115-IDEA262") // EmmyLua2: tests the optional Lua injection against a real Lua plugin
-        testPlugin("com.redhat.devtools.lsp4ij", "0.21.0") // EmmyLua2 needs it, or the platform silently disables EmmyLua2
+        testPlugin(
+            "com.cppcxy.Intellij-EmmyLua",
+            "0.24.0.115-IDEA262"
+        ) // EmmyLua2: tests the optional Lua injection against a real Lua plugin
+        testPlugin(
+            "com.redhat.devtools.lsp4ij",
+            "0.21.0"
+        ) // EmmyLua2 needs it, or the platform silently disables EmmyLua2
 
         // Add plugin dependencies for compilation here, for example:
         // bundledPlugin("com.intellij.java")

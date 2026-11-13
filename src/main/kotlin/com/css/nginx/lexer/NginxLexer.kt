@@ -89,7 +89,9 @@ class NginxLexer : LexerBase() {
             else -> {
                 i++
                 while (i < end && !buf[i].isWhitespace() && buf[i] !in ";{}" && !isVarStart(i)) i++
-                if (state == 0) NginxTypes.NAME.also { state = if (buf.subSequence(start, i).endsWith("_by_lua_block")) 2 else 1 }
+                if (state == 0) NginxTypes.NAME.also {
+                    state = if (buf.subSequence(start, i).endsWith("_by_lua_block")) 2 else 1
+                }
                 else NginxTypes.WORD.also { if (state != 2) state = 1 }
             }
         }
@@ -106,6 +108,7 @@ class NginxLexer : LexerBase() {
             while (j < end && buf[j] == '=') j++
             return if (j < end && buf[j] == '[') j - at - 1 else -1
         }
+
         fun skipLong(at: Int, level: Int): Int {  // past the matching ]==]
             val close = "]" + "=".repeat(level) + "]"
             val k = buf.indexOf(close, at + level + 2)
@@ -119,11 +122,16 @@ class NginxLexer : LexerBase() {
                     i = if (level >= 0) skipLong(i + 2, level) else buf.indexOf('\n', i).let { if (it < 0) end else it }
                     continue
                 }
+
                 c == '"' || c == '\'' -> {
                     i++
                     while (i < end && buf[i] != c && buf[i] != '\n') i += if (buf[i] == '\\' && i + 1 < end) 2 else 1
                 }
-                c == '[' && longBracket(i) >= 0 -> { i = skipLong(i, longBracket(i)); continue }
+
+                c == '[' && longBracket(i) >= 0 -> {
+                    i = skipLong(i, longBracket(i)); continue
+                }
+
                 c == '{' -> depth++
                 c == '}' -> if (depth == 0) return i else depth--
             }

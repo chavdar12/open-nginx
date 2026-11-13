@@ -8,13 +8,28 @@ import com.intellij.psi.util.PsiTreeUtil
 /** On an HTTPS server block: adds a port-80 server that redirects the same names to https. */
 class NginxSslRedirectIntention : NginxIntention("Add HTTP to HTTPS redirect server") {
     override fun target(at: NginxDirective, editor: Editor): NginxDirective? {
-        val server = generateSequence(at) { PsiTreeUtil.getParentOfType(it, NginxDirective::class.java) }.firstOrNull { it.directiveName == "server" } ?: return null
-        val https = server.directives.any { it.directiveName == "listen" && it.args.any { a -> a.joinToString("") { t -> t.text }.let { t -> t == "ssl" || t.endsWith("443") } } }
+        val server = generateSequence(at) {
+            PsiTreeUtil.getParentOfType(
+                it,
+                NginxDirective::class.java
+            )
+        }.firstOrNull { it.directiveName == "server" } ?: return null
+        val https = server.directives.any {
+            it.directiveName == "listen" && it.args.any { a ->
+                a.joinToString("") { t -> t.text }.let { t -> t == "ssl" || t.endsWith("443") }
+            }
+        }
         if (!https) return null
         val names = names(server)
         // already redirected: another server in the same block listens on 80 for one of these names
-        val siblings = PsiTreeUtil.getChildrenOfTypeAsList(server.parent, NginxDirective::class.java).filter { it != server && it.directiveName == "server" }
-        val covered = siblings.any { s -> s.directives.any { it.directiveName == "listen" && it.args.firstOrNull()?.joinToString("") { t -> t.text }?.endsWith("80") == true } && names(s).intersect(names.toSet()).isNotEmpty() }
+        val siblings = PsiTreeUtil.getChildrenOfTypeAsList(server.parent, NginxDirective::class.java)
+            .filter { it != server && it.directiveName == "server" }
+        val covered = siblings.any { s ->
+            s.directives.any {
+                it.directiveName == "listen" && it.args.firstOrNull()?.joinToString("") { t -> t.text }
+                    ?.endsWith("80") == true
+            } && names(s).intersect(names.toSet()).isNotEmpty()
+        }
         return server.takeUnless { covered }
     }
 
@@ -29,5 +44,6 @@ class NginxSslRedirectIntention : NginxIntention("Add HTTP to HTTPS redirect ser
     }
 
     private fun names(server: NginxDirective) =
-        server.directives.filter { it.directiveName == "server_name" }.flatMap { it.args.map { a -> a.joinToString("") { t -> t.text } } }
+        server.directives.filter { it.directiveName == "server_name" }
+            .flatMap { it.args.map { a -> a.joinToString("") { t -> t.text } } }
 }

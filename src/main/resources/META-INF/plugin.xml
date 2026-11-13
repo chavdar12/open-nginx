@@ -60,10 +60,14 @@
         <spellchecker.support language="Nginx"
                               implementationClass="com.intellij.spellchecker.tokenizer.SpellcheckingStrategy"/>
         <lang.commenter language="Nginx" implementationClass="com.css.nginx.editor.NginxCommenter"/>
-        <lang.elementManipulator forClass="com.css.nginx.psi.NginxDirective" implementationClass="com.css.nginx.psi.NginxDirectiveManipulator"/>
-        <lang.refactoringSupport language="Nginx" implementationClass="com.css.nginx.navigation.NginxRefactoringSupport"/>
-        <lang.findUsagesProvider language="Nginx" implementationClass="com.css.nginx.navigation.NginxFindUsagesProvider"/>
-        <lang.psiStructureViewFactory language="Nginx" implementationClass="com.css.nginx.structure.NginxStructureViewFactory"/>
+        <lang.elementManipulator forClass="com.css.nginx.psi.NginxDirective"
+                                 implementationClass="com.css.nginx.psi.NginxDirectiveManipulator"/>
+        <lang.refactoringSupport language="Nginx"
+                                 implementationClass="com.css.nginx.navigation.NginxRefactoringSupport"/>
+        <lang.findUsagesProvider language="Nginx"
+                                 implementationClass="com.css.nginx.navigation.NginxFindUsagesProvider"/>
+        <lang.psiStructureViewFactory language="Nginx"
+                                      implementationClass="com.css.nginx.structure.NginxStructureViewFactory"/>
         <lang.foldingBuilder language="Nginx" implementationClass="com.css.nginx.editor.NginxFoldingBuilder"/>
         <lang.braceMatcher language="Nginx" implementationClass="com.css.nginx.editor.NginxBraceMatcher"/>
         <multiHostInjector implementation="com.css.nginx.inject.NginxInjector"/>

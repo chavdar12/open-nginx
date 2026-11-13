@@ -19,15 +19,26 @@ class NginxRegexAnnotator : Annotator {
             val re = range.substring(token.text)
             val base = token.textRange.startOffset + range.startOffset
             fun color(from: Int, len: Int, key: com.intellij.openapi.editor.colors.TextAttributesKey) =
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(TextRange.from(base + from, len)).textAttributes(key).create()
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(TextRange.from(base + from, len))
+                    .textAttributes(key).create()
+
             var i = 0
             var inClass = false
             while (i < re.length) {
                 val c = re[i]
                 when {
-                    c == '\\' && i + 1 < re.length -> { color(i, 2, NginxColors.REGEX_ESCAPE); i += 2; continue }
-                    inClass -> if (c == ']') { color(i, 1, NginxColors.REGEX_META); inClass = false }
-                    c == '[' -> { color(i, 1, NginxColors.REGEX_META); inClass = true }
+                    c == '\\' && i + 1 < re.length -> {
+                        color(i, 2, NginxColors.REGEX_ESCAPE); i += 2; continue
+                    }
+
+                    inClass -> if (c == ']') {
+                        color(i, 1, NginxColors.REGEX_META); inClass = false
+                    }
+
+                    c == '[' -> {
+                        color(i, 1, NginxColors.REGEX_META); inClass = true
+                    }
+
                     c in META -> color(i, 1, NginxColors.REGEX_META)
                 }
                 i++

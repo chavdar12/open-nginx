@@ -7,6 +7,7 @@ object NginxColors {
     val DIRECTIVE = createTextAttributesKey("NGINX_DIRECTIVE", C.KEYWORD)
     val STRING = createTextAttributesKey("NGINX_STRING", C.STRING)
     val VARIABLE = createTextAttributesKey("NGINX_VARIABLE", C.INSTANCE_FIELD)
+
     // METADATA: the one unused standard color that stands out in both light and dark schemes
     val PARAMETER = createTextAttributesKey("NGINX_PARAMETER", C.METADATA)
     val COMMENT = createTextAttributesKey("NGINX_COMMENT", C.LINE_COMMENT)

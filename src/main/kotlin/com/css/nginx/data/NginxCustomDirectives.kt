@@ -1,10 +1,6 @@
 package com.css.nginx.data
 
-import com.intellij.openapi.components.BaseState
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.SimplePersistentStateComponent
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.*
 
 /** Directive and variable names a project declares known (its own modules), stored in .idea/nginx.xml so the team shares them. */
 @Service(Service.Level.PROJECT)

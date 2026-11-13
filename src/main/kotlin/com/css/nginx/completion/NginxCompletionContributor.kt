@@ -23,31 +23,61 @@ import com.intellij.util.ProcessingContext
  */
 class NginxCompletionContributor : CompletionContributor() {
     init {
-        extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(NginxLanguage), object : CompletionProvider<CompletionParameters>() {
-            override fun addCompletions(p: CompletionParameters, c: ProcessingContext, result: CompletionResultSet) {
-                val leaf = p.position
-                val beforeCaret = leaf.text.substring(0, (p.offset - leaf.textRange.startOffset).coerceIn(0, leaf.textLength))
-                val varPrefix = Regex("""\$\{?(\w*)$""").find(beforeCaret)
-                val d = leaf.parent as? NginxDirective
-                val type = leaf.node.elementType
-                when {
-                    varPrefix != null -> completeVariables(p.originalFile, result.withPrefixMatcher(varPrefix.groupValues[1]))
-                    d == null -> return
-                    type == NginxTypes.NAME && NginxDirectives.contextOf(d) == "types" -> mimeTypes(result)
-                    type == NginxTypes.NAME -> completeDirectives(d, result)
-                    type != NginxTypes.WORD -> return
-                    NginxHeaders.isHeaderName(leaf) -> NginxHeaders.all.values.forEach {
-                        result.addElement(LookupElementBuilder.create(it.name).withCaseSensitivity(false).withTypeText("header"))
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().withLanguage(NginxLanguage),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(
+                    p: CompletionParameters,
+                    c: ProcessingContext,
+                    result: CompletionResultSet
+                ) {
+                    val leaf = p.position
+                    val beforeCaret =
+                        leaf.text.substring(0, (p.offset - leaf.textRange.startOffset).coerceIn(0, leaf.textLength))
+                    val varPrefix = Regex("""\$\{?(\w*)$""").find(beforeCaret)
+                    val d = leaf.parent as? NginxDirective
+                    val type = leaf.node.elementType
+                    when {
+                        varPrefix != null -> completeVariables(
+                            p.originalFile,
+                            result.withPrefixMatcher(varPrefix.groupValues[1])
+                        )
+
+                        d == null -> return
+                        type == NginxTypes.NAME && NginxDirectives.contextOf(d) == "types" -> mimeTypes(result)
+                        type == NginxTypes.NAME -> completeDirectives(d, result)
+                        type != NginxTypes.WORD -> return
+                        NginxHeaders.isHeaderName(leaf) -> NginxHeaders.all.values.forEach {
+                            result.addElement(
+                                LookupElementBuilder.create(it.name).withCaseSensitivity(false).withTypeText("header")
+                            )
+                        }
+
+                        d.directiveName == "default_type" -> mimeTypes(result)
+                        beforeCaret.startsWith("@") -> names(
+                            p.originalFile,
+                            result.withPrefixMatcher(beforeCaret),
+                            '@',
+                            "named location"
+                        )
+
+                        d.directiveName in PASS -> names(p.originalFile, result, null, "upstream")
+                        NginxPaths.pathArg(d) != null && leaf in NginxPaths.pathArg(d)!! ->
+                            completePaths(
+                                p.originalFile,
+                                d.directiveName in NginxPaths.DIRECTORIES,
+                                result.withPrefixMatcher(beforeCaret)
+                            )
+
+                        else -> NginxDirectives.all[d.directiveName]?.values?.forEach {
+                            result.addElement(
+                                LookupElementBuilder.create(it)
+                            )
+                        }
                     }
-                    d.directiveName == "default_type" -> mimeTypes(result)
-                    beforeCaret.startsWith("@") -> names(p.originalFile, result.withPrefixMatcher(beforeCaret), '@', "named location")
-                    d.directiveName in PASS -> names(p.originalFile, result, null, "upstream")
-                    NginxPaths.pathArg(d) != null && leaf in NginxPaths.pathArg(d)!! ->
-                        completePaths(p.originalFile, d.directiveName in NginxPaths.DIRECTORIES, result.withPrefixMatcher(beforeCaret))
-                    else -> NginxDirectives.all[d.directiveName]?.values?.forEach { result.addElement(LookupElementBuilder.create(it)) }
                 }
-            }
-        })
+            })
     }
 
     // a reference (variable, upstream, path) would make the platform replace up to its end, e.g. the `}` of ${var}, and
@@ -62,24 +92,35 @@ class NginxCompletionContributor : CompletionContributor() {
         for (info in NginxDirectives.all.values) {
             if (ctx == null || info.contexts.isEmpty() || ctx in info.contexts)
                 result.addElement(
-                    LookupElementBuilder.create(info.name).withTailText(" " + info.plainSyntax, true).withTypeText(info.module)
+                    LookupElementBuilder.create(info.name).withTailText(" " + info.plainSyntax, true)
+                        .withTypeText(info.module)
                         .withStrikeoutness(info.name in NginxDirectives.obsolete),
                 )
         }
     }
 
-    private fun mimeTypes(result: CompletionResultSet) = NginxMimeTypes.all.forEach { result.addElement(LookupElementBuilder.create(it)) }
+    private fun mimeTypes(result: CompletionResultSet) =
+        NginxMimeTypes.all.forEach { result.addElement(LookupElementBuilder.create(it)) }
 
     private fun completeVariables(file: PsiFile, result: CompletionResultSet) {
         for (v in NginxDirectives.variables.values) {
-            result.addElement(LookupElementBuilder.create(v.name).withPresentableText("$" + v.name).withTypeText("built-in"))
+            result.addElement(
+                LookupElementBuilder.create(v.name).withPresentableText("$" + v.name).withTypeText("built-in")
+            )
         }
         val index = NginxDeclarations.index(file) ?: return
         for ((key, decls) in index.byName) if (key.startsWith("$")) {
             val name = key.substring(1)
-            result.addElement(LookupElementBuilder.create(name).withPresentableText(key).withTypeText(decls.first().containingFile.name))
+            result.addElement(
+                LookupElementBuilder.create(name).withPresentableText(key)
+                    .withTypeText(decls.first().containingFile.name)
+            )
         }
-        index.captures.forEach { result.addElement(LookupElementBuilder.create(it).withPresentableText("$$it").withTypeText("regex capture")) }
+        index.captures.forEach {
+            result.addElement(
+                LookupElementBuilder.create(it).withPresentableText("$$it").withTypeText("regex capture")
+            )
+        }
     }
 
     /** Upstreams (prefix null) or @named locations from every file of the project. */
@@ -87,7 +128,9 @@ class NginxCompletionContributor : CompletionContributor() {
         val all = NginxDeclarations.declarations(file) ?: return
         for ((key, decls) in all) {
             if (prefix == null && (key[0] == '$' || key[0] == '@') || prefix != null && key[0] != prefix) continue
-            result.addElement(LookupElementBuilder.create(key).withTypeText("$kind · ${decls.first().containingFile.name}"))
+            result.addElement(
+                LookupElementBuilder.create(key).withTypeText("$kind · ${decls.first().containingFile.name}")
+            )
         }
     }
 
@@ -95,10 +138,15 @@ class NginxCompletionContributor : CompletionContributor() {
     private fun completePaths(file: PsiFile, dirsOnly: Boolean, result: CompletionResultSet) {
         val base = file.originalFile.virtualFile?.parent?.let(NginxPaths::baseDir) ?: return
         var count = 0
-        VfsUtilCore.iterateChildrenRecursively(base, { !it.name.startsWith(".") && it.name != "node_modules" }) { f: VirtualFile ->
+        VfsUtilCore.iterateChildrenRecursively(
+            base,
+            { !it.name.startsWith(".") && it.name != "node_modules" }) { f: VirtualFile ->
             if (f != base && (!dirsOnly || f.isDirectory)) {
                 val rel = VfsUtilCore.getRelativePath(f, base)!!
-                result.addElement(LookupElementBuilder.create(rel).withIcon(if (f.isDirectory) AllIcons.Nodes.Folder else AllIcons.FileTypes.Any_type))
+                result.addElement(
+                    LookupElementBuilder.create(rel)
+                        .withIcon(if (f.isDirectory) AllIcons.Nodes.Folder else AllIcons.FileTypes.Any_type)
+                )
             }
             ++count < 2000  // shortcut: stops after 2000 entries, enough for config folders; index by name if users have huge trees
         }

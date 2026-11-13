@@ -9,8 +9,11 @@ class NginxColorSettingsPage : ColorSettingsPage {
     override fun getDisplayName() = "Nginx"
     override fun getIcon() = NginxFileType.icon
     override fun getHighlighter() = NginxSyntaxHighlighter()
+
     // parameter names are colored by the annotator, so the demo marks them with a tag
-    override fun getAdditionalHighlightingTagToDescriptorMap() = mapOf("param" to NginxColors.PARAMETER, "re" to NginxColors.REGEX_META, "esc" to NginxColors.REGEX_ESCAPE)
+    override fun getAdditionalHighlightingTagToDescriptorMap() =
+        mapOf("param" to NginxColors.PARAMETER, "re" to NginxColors.REGEX_META, "esc" to NginxColors.REGEX_ESCAPE)
+
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
     override fun getAttributeDescriptors() = arrayOf(
         AttributesDescriptor("Directive", NginxColors.DIRECTIVE),
