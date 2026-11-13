@@ -20,7 +20,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5
       # tests include the 508-config nginx corpus; buildPlugin checks the plugin zip still packages
       - run: ./gradlew test buildPlugin
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: test-reports
