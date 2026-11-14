@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:NginxAnnotator.kt$NginxAnnotator$path.startsWith("/") || NginxPaths.isGlob(path) || path in SHIPPED_INCLUDES || NginxPaths.resolve( d.containingFile, path ).isNotEmpty()</ID>
+    <ID>ComplexCondition:NginxCompletionContributor.kt$NginxCompletionContributor$prefix == null &amp;&amp; (key[0] == '$' || key[0] == '@') || prefix != null &amp;&amp; key[0] != prefix</ID>
+    <ID>ComplexCondition:NginxLexer.kt$NginxLexer$i &lt; end &amp;&amp; !buf[i].isWhitespace() &amp;&amp; buf[i] !in ";{}" &amp;&amp; !isVarStart(i)</ID>
+    <ID>ComplexCondition:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$loc != null &amp;&amp; !loc.startsWith("~") &amp;&amp; !loc.startsWith("@") &amp;&amp; !loc.endsWith("/") &amp;&amp; args.firstOrNull() ?.endsWith("/") == true</ID>
+    <ID>CyclomaticComplexMethod:NginxAnnotator.kt$NginxAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>CyclomaticComplexMethod:NginxBlock.kt$NginxBlock$override fun buildChildren(): List&lt;Block&gt;</ID>
+    <ID>CyclomaticComplexMethod:NginxBlock.kt$NginxBlock$override fun getSpacing(child1: Block?, child2: Block): Spacing?</ID>
+    <ID>CyclomaticComplexMethod:NginxDeclarations.kt$NginxDeclarations$fun nameIdentifier(d: NginxDirective): PsiElement?</ID>
+    <ID>CyclomaticComplexMethod:NginxDocumentationProvider.kt$NginxDocumentationProvider$override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String?</ID>
+    <ID>CyclomaticComplexMethod:NginxDuplicateAnnotator.kt$NginxDuplicateAnnotator$private fun checkServer(d: NginxDirective, siblings: List&lt;NginxDirective&gt;, holder: AnnotationHolder)</ID>
+    <ID>CyclomaticComplexMethod:NginxLexer.kt$NginxLexer$override fun advance()</ID>
+    <ID>CyclomaticComplexMethod:NginxLexer.kt$NginxLexer$private fun luaEnd(from: Int): Int</ID>
+    <ID>CyclomaticComplexMethod:NginxReferences.kt$NginxReferences$fun of(d: NginxDirective): Array&lt;PsiReference&gt;</ID>
+    <ID>CyclomaticComplexMethod:NginxRegex.kt$NginxRegex$fun of(d: NginxDirective): List&lt;Pair&lt;PsiElement, TextRange&gt;&gt;</ID>
+    <ID>CyclomaticComplexMethod:NginxRegexAnnotator.kt$NginxRegexAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>CyclomaticComplexMethod:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>CyclomaticComplexMethod:NginxUrlAnnotator.kt$NginxUrlAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>LongMethod:NginxAnnotator.kt$NginxAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>LongMethod:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>LongParameterList:NginxDirectives.kt$NginxDirectives.Info$( val name: String, /** empty = allowed anywhere (include) */ val contexts: Set&lt;String&gt;, val min: Int, val max: Int?, val values: Set&lt;String&gt;, /** HTML; each syntax form is one line, separated by &lt;br&gt; */ val url: String, val default: String, val syntax: String, val doc: String, )</ID>
+    <ID>LoopWithTooManyJumpStatements:NginxIncludes.kt$NginxIncludes$for</ID>
+    <ID>LoopWithTooManyJumpStatements:NginxLexer.kt$NginxLexer$while</ID>
+    <ID>MagicNumber:NginxAnnotator.kt$NginxAnnotator$4</ID>
+    <ID>MagicNumber:NginxAnnotator.kt$NginxAnnotator$8</ID>
+    <ID>MagicNumber:NginxCompletionContributor.kt$NginxCompletionContributor$2000</ID>
+    <ID>MagicNumber:NginxConfTypeRefresher.kt$NginxConfTypeRefresher$300</ID>
+    <ID>MagicNumber:NginxConfigTestAnnotator.kt$NginxConfigTestAnnotator$10_000</ID>
+    <ID>MagicNumber:NginxDirectives.kt$NginxDirectives$3</ID>
+    <ID>MagicNumber:NginxDirectives.kt$NginxDirectives$4</ID>
+    <ID>MagicNumber:NginxDirectives.kt$NginxDirectives$5</ID>
+    <ID>MagicNumber:NginxDirectives.kt$NginxDirectives$6</ID>
+    <ID>MagicNumber:NginxDirectives.kt$NginxDirectives$7</ID>
+    <ID>MagicNumber:NginxDirectives.kt$NginxDirectives$8</ID>
+    <ID>MagicNumber:NginxJsFunctionReference.kt$NginxJsFunctionReference$3</ID>
+    <ID>MagicNumber:NginxLanguageCodeStyleSettingsProvider.kt$NginxLanguageCodeStyleSettingsProvider$4</ID>
+    <ID>MagicNumber:NginxLexer.kt$NginxLexer$3</ID>
+    <ID>MagicNumber:NginxReferences.kt$NginxReferences$3</ID>
+    <ID>MagicNumber:NginxSniffing.kt$4096</ID>
+    <ID>MagicNumber:NginxSniffing.kt$50</ID>
+    <ID>MagicNumber:NginxTestOutput.kt$3</ID>
+    <ID>MagicNumber:NginxTestOutput.kt$4</ID>
+    <ID>MagicNumber:NginxUrlAnnotator.kt$NginxUrlAnnotator$3</ID>
+    <ID>MagicNumber:NginxUrlAnnotator.kt$NginxUrlAnnotator$65535</ID>
+    <ID>MaxLineLength:CorpusHighlightingTest.kt$CorpusHighlightingTest$// advice (security, deprecations) is not a false positive: nginx's tests use weak TLS, $uri in headers... on purpose</ID>
+    <ID>MaxLineLength:NginxAnnotator.kt$NginxAnnotator$/** Moves a misplaced directive up to the nearest enclosing block where it is allowed, just before the block it was in. */</ID>
+    <ID>MaxLineLength:NginxAnnotator.kt$NginxAnnotator$/** Only relative paths without wildcards: absolute ones usually live outside the project, and globs may match nothing. */</ID>
+    <ID>MaxLineLength:NginxAnnotator.kt$NginxAnnotator$/** nginx refuses to start on an unknown variable; set/map/geo/... anywhere in the project and regex captures count as declared. */</ID>
+    <ID>MaxLineLength:NginxAnnotator.kt$NginxAnnotator$if (name.all { it.isDigit() } || NginxDirectives.variable(name) != null || name in e.project.service&lt;NginxCustomDirectives&gt;().variables) return</ID>
+    <ID>MaxLineLength:NginxAnnotator.kt$NginxAnnotator$}</ID>
+    <ID>MaxLineLength:NginxBlock.kt$NginxBlock$/** Runs of one-line directives with arguments, split by blank lines, comment lines and { } directives, share a column. */</ID>
+    <ID>MaxLineLength:NginxBlock.kt$NginxBlock$// a leaf never gets sub-blocks, so injected regex / Lua stay opaque (the platform would add blocks for injected text)</ID>
+    <ID>MaxLineLength:NginxBlock.kt$NginxBlock$// wrapped arguments line up under the last argument of the first line, like log_format in the nginx docs</ID>
+    <ID>MaxLineLength:NginxBlock.kt$NginxBlock$k.elementType == NginxTypes.DIRECTIVE &amp;&amp; '\n' !in k.text &amp;&amp; k.findChildByType(NginxTypes.BLOCK) == null</ID>
+    <ID>MaxLineLength:NginxBlock.kt$NginxBlock$kids.indices.filter { i -&gt; i &gt; 0 &amp;&amp; kids[i].elementType in ARGUMENT_TOKENS &amp;&amp; kids[i - 1].textRange.endOffset != kids[i].startOffset }</ID>
+    <ID>MaxLineLength:NginxBlock.kt$NginxBlock$myNode.elementType == NginxTypes.BLOCK &amp;&amp; style.common.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE &amp;&amp; '\n' !in myNode.text</ID>
+    <ID>MaxLineLength:NginxCodeStyleSettings.kt$NginxCodeStyleSettings$/** Wrapped arguments (log_format strings...) line up under the last argument of the first line, as in the nginx docs. */</ID>
+    <ID>MaxLineLength:NginxCompletionContributor.kt$NginxCompletionContributor$++count &lt; 2000</ID>
+    <ID>MaxLineLength:NginxCompletionContributor.kt$NginxCompletionContributor$// treat the caret as mid-word (no auto-insert of a single match); setting the default end explicitly keeps word behavior</ID>
+    <ID>MaxLineLength:NginxConfTypeRefresher.kt$NginxConfTypeRefresher$/** A new test.conf starts empty (not nginx); when typing makes it nginx (or not), re-detect so the open editor switches. */</ID>
+    <ID>MaxLineLength:NginxConfigTestAnnotator.kt$NginxConfigTestAnnotator$// shortcut: tests the saved file, so lines drift until the IDE autosaves; feed the document through a temp copy if that bothers users</ID>
+    <ID>MaxLineLength:NginxCorpusTestCase.kt$NginxCorpusTestCase$return out.filterIndexed { i, t -&gt; t != " " || (i &gt; 0 &amp;&amp; i &lt; out.size - 1 &amp;&amp; out[i - 1] !in structural &amp;&amp; out[i + 1] !in structural) }</ID>
+    <ID>MaxLineLength:NginxCrossFileTest.kt$NginxCrossFileTest$"Conflicting server name 'a.com' on *:80: a server block in a.nginx has it too, nginx uses whichever is included first"</ID>
+    <ID>MaxLineLength:NginxCrossFileTest.kt$NginxCrossFileTest$"events { } http { include &lt;weak_warning descr=\"Cannot find included file 'snippets/missing.conf'\"&gt;snippets/missing.conf&lt;/weak_warning&gt;; include mime.types;\n"</ID>
+    <ID>MaxLineLength:NginxCrossFileTest.kt$NginxCrossFileTest$"http { js_import app from js/main.js; js_set ${d}v app.other; server { location / { js_content app.hel&lt;caret&gt;lo; } } }"</ID>
+    <ID>MaxLineLength:NginxCrossFileTest.kt$NginxCrossFileTest$"http { upstream unu&lt;caret&gt;sed { server a; } upstream used { server b; } server { location / { proxy_pass http://used; } } }"</ID>
+    <ID>MaxLineLength:NginxCrossFileTest.kt$NginxCrossFileTest$"http {\n include mime.types;\n server {\n listen 80;\n root /srv;\n location /api {\n }\n }\n}\n"</ID>
+    <ID>MaxLineLength:NginxCrossFileTest.kt$NginxCrossFileTest$"server { location ~ ^/(?&lt;id&gt;[0-9]+)$ { return 200 ${d}id; } location / { return 200 &lt;warning descr=\"Unknown variable '${d}nope': not built in and not declared by set, map, geo... in this project\"&gt;${d}nope&lt;/warning&gt;; } } }"</ID>
+    <ID>MaxLineLength:NginxCrossFileTest.kt$NginxCrossFileTest$(NginxStructureViewFactory().getStructureViewBuilder(myFixture.file) as TreeBasedStructureViewBuilder)</ID>
+    <ID>MaxLineLength:NginxCustomDirectives.kt$NginxCustomDirectives$/** Directive and variable names a project declares known (its own modules), stored in .idea/nginx.xml so the team shares them. */</ID>
+    <ID>MaxLineLength:NginxDeclarations.kt$NginxDeclarations$(d.parent?.parent as? NginxDirective)?.directiveName !in KEYED_BLOCKS</ID>
+    <ID>MaxLineLength:NginxDeclarations.kt$NginxDeclarations$/** Host of a plain `http://app/x` or `app` URL; null when it has a port, a variable, a socket or an IPv6 literal. */</ID>
+    <ID>MaxLineLength:NginxDeclarations.kt$NginxDeclarations$// a module we have no data for, e.g. `auth_jwt_claim_set $sub sub;`: a lone $variable first is almost always what it declares</ID>
+    <ID>MaxLineLength:NginxDeclarations.kt$NginxDeclarations$d.nameElement.node.elementType == NginxTypes.VARIABLE &amp;&amp; (d.parent?.parent as? NginxDirective)?.directiveName == "geoip2" -&gt; d.nameElement</ID>
+    <ID>MaxLineLength:NginxDirective.kt$NginxDirective$/** Declarations (`upstream app`, `set $x`, `location @x`...) are named: targets of Cmd+B, Find Usages, Rename; see NginxDeclarations. */</ID>
+    <ID>MaxLineLength:NginxDirectiveManipulator.kt$NginxDirectiveManipulator$/** Rewrites part of one token in a directive, e.g. the host in `proxy_pass http://app/x;` when its upstream is renamed. */</ID>
+    <ID>MaxLineLength:NginxDirectives.kt$NginxDirectives$/** Core nginx directives, plus popular third-party modules (OpenResty, headers-more, brotli, geoip2...); core wins on clashes. */</ID>
+    <ID>MaxLineLength:NginxDirectives.kt$NginxDirectives$/** Enclosing block name, "main" at the top of nginx.conf; at the top of a snippet, where its `include`s sit (null if unknown). */</ID>
+    <ID>MaxLineLength:NginxDirectives.kt$NginxDirectives.Info$val</ID>
+    <ID>MaxLineLength:NginxDocumentationProvider.kt$NginxDocumentationProvider$.</ID>
+    <ID>MaxLineLength:NginxDocumentationProvider.kt$NginxDocumentationProvider$SECTIONS_START</ID>
+    <ID>MaxLineLength:NginxDocumentationTest.kt$NginxDocumentationTest$"&lt;code&gt;&lt;b&gt;location&lt;/b&gt; &lt;i&gt;${'$'}variable&lt;/i&gt; { … }&lt;/code&gt;&lt;br&gt;&lt;code&gt;&lt;b&gt;location&lt;/b&gt; &lt;code&gt;@&lt;/code&gt;&lt;i&gt;name&lt;/i&gt; { … }&lt;/code&gt;"</ID>
+    <ID>MaxLineLength:NginxDocumentationTest.kt$NginxDocumentationTest$"&lt;code&gt;&lt;b&gt;location&lt;/b&gt; [ &lt;code&gt;=&lt;/code&gt; | &lt;code&gt;~&lt;/code&gt; | &lt;code&gt;~*&lt;/code&gt; | &lt;code&gt;^~&lt;/code&gt; ] &lt;i&gt;uri&lt;/i&gt; { … }&lt;/code&gt;&lt;br&gt;"</ID>
+    <ID>MaxLineLength:NginxDuplicateAnnotator.kt$NginxDuplicateAnnotator$*</ID>
+    <ID>MaxLineLength:NginxDuplicateAnnotator.kt$NginxDuplicateAnnotator$/** http server blocks in the project's other files that belong to the same config (same folder holding nginx.conf). */</ID>
+    <ID>MaxLineLength:NginxDuplicateAnnotator.kt$NginxDuplicateAnnotator$if</ID>
+    <ID>MaxLineLength:NginxDuplicateAnnotator.kt$NginxDuplicateAnnotator$if (s.containingFile == d.containingFile) "an earlier server block" else "a server block in ${s.containingFile.name}"</ID>
+    <ID>MaxLineLength:NginxExtractIncludeIntention.kt$NginxExtractIncludeIntention$*</ID>
+    <ID>MaxLineLength:NginxFix.kt$NginxFix$/** An Alt+Enter fix that edits the document around [element]; the element is re-found at invoke time, so stale fixes do nothing. */</ID>
+    <ID>MaxLineLength:NginxFixesTest.kt$NginxFixesTest$"http { auth_jwt_claim_set \$sub sub; my_flag on; map \$sub \$u { default \$nope; } server { return 200 \$sub; } }"</ID>
+    <ID>MaxLineLength:NginxFixesTest.kt$NginxFixesTest$"http {\n server {\n &lt;selection&gt;listen 80;\n server_name a.com;&lt;caret&gt;&lt;/selection&gt;\n }\n}"</ID>
+    <ID>MaxLineLength:NginxFixesTest.kt$NginxFixesTest$"http {\n server {\n listen 443 ssl;\n server_name a.com b.com;\n }\n\n server {\n listen 80;\n listen [::]:80;\n server_name a.com b.com;\n return 301 https://${d}host${d}request_uri;\n }\n}"</ID>
+    <ID>MaxLineLength:NginxFixesTest.kt$NginxFixesTest$"server {\n add_header Strict-Transport-Security \"max-age=31536000\" always;\n location / {\n add_&lt;caret&gt;header X-Cache 1;\n }\n}"</ID>
+    <ID>MaxLineLength:NginxFixesTest.kt$NginxFixesTest$"server {\n add_header Strict-Transport-Security \"max-age=31536000\" always;\n location / {\n add_header Strict-Transport-Security \"max-age=31536000\" always;\n add_header X-Cache 1;\n }\n}"</ID>
+    <ID>MaxLineLength:NginxGotoUpstreamTest.kt$NginxRenameUpstreamTest$myFixture.checkResult("http { upstream backend { server 127.0.0.1; } server { location / { proxy_pass http://backend/; } } }")</ID>
+    <ID>MaxLineLength:NginxHeaders.kt$NginxHeaders$/** True when [e] is a header-name argument (the Host in proxy_set_header Host $host, any of proxy_ignore_headers). */</ID>
+    <ID>MaxLineLength:NginxHeaders.kt$NginxHeaders$if (d.directiveName.endsWith("_ignore_headers")) return d.args.any { it.firstOrNull() == e }</ID>
+    <ID>MaxLineLength:NginxHostLeaf.kt$NginxHostLeaf$/** A word, string or Lua body that another language (RegExp, Lua) can be injected into; edits in the injected editor come back via updateText. */</ID>
+    <ID>MaxLineLength:NginxInjector.kt$NginxInjector$// via the .lua file type: Lua plugins create their Language lazily, so findLanguageByID("Lua") is null until a .lua file is used</ID>
+    <ID>MaxLineLength:NginxJsFunctionReference.kt$NginxJsFunctionReference$/** `js_content main.hello`: the function `hello` in the file that `js_import main from x.js` (or `js_import main.js`) loads. */</ID>
+    <ID>MaxLineLength:NginxJsFunctionReference.kt$NginxJsFunctionReference$// shortcut: finds the function by text so the JavaScript plugin stays optional; misses functions built at runtime</ID>
+    <ID>MaxLineLength:NginxLexer.kt$NginxLexer$*</ID>
+    <ID>MaxLineLength:NginxLexer.kt$NginxLexer$/** End of a Lua body starting at [from]: the `}` that closes it, skipping Lua strings, comments and long brackets. */</ID>
+    <ID>MaxLineLength:NginxLexer.kt$NginxLexer$while (i &gt; start &amp;&amp; buf[i - 1].isWhitespace()) i--</ID>
+    <ID>MaxLineLength:NginxModulesTest.kt$NginxModulesTest$"http {\n server {\n location / {\n set_by_lua_block ${d}x { return 1 }\n content_by_lua_block {\n $lua\n }\n gzip on;\n }\n }\n}\n"</ID>
+    <ID>MaxLineLength:NginxModulesTest.kt$NginxModulesTest$"location ~ &lt;warning descr=\"Security: ReDoS: a repeated group that itself repeats ('^/(a+)+$') can take exponential time on a crafted URL\"&gt;^/(a+)+$&lt;/warning&gt; { }\n"</ID>
+    <ID>MaxLineLength:NginxModulesTest.kt$NginxModulesTest$"location ~ \"&lt;warning descr=\"Invalid regular expression: Unclosed group\"&gt;^/(a&lt;/warning&gt;\" { }\n"</ID>
+    <ID>MaxLineLength:NginxModulesTest.kt$NginxModulesTest$"server { listen ${d}{NGINX_PORT}; server_name ${d}{NGINX_HOST}; return 200 &lt;warning descr=\"Unknown variable '${d}lower': not built in and not declared by set, map, geo... in this project\"&gt;${d}{lower}&lt;/warning&gt;; }"</ID>
+    <ID>MaxLineLength:NginxModulesTest.kt$NginxModulesTest$"server { location / { more_set_headers 'X-A: b'; brotli &lt;error descr=\"Invalid value 'maybe' for 'brotli', expected on | off\"&gt;maybe&lt;/error&gt;; } } }"</ID>
+    <ID>MaxLineLength:NginxNamesValidator.kt$NginxNamesValidator$/** Names rename accepts: `$var`, `@location`, or an upstream name; nothing that would split into several nginx tokens. */</ID>
+    <ID>MaxLineLength:NginxParser.kt$NginxParser$if (b.tokenType == NginxTypes.LUA) b.advanceLexer() else directive(b)</ID>
+    <ID>MaxLineLength:NginxPaths.kt$NginxPaths$*</ID>
+    <ID>MaxLineLength:NginxPaths.kt$NginxPaths$name.endsWith("_by_lua_file") -&gt; args.firstOrNull { it.singleOrNull()?.node?.elementType != NginxTypes.VARIABLE }</ID>
+    <ID>MaxLineLength:NginxRefactoringSupport.kt$NginxRefactoringSupport$/** Shift+F6 renames upstreams, variables and named locations in place; Safe Delete (Alt+Delete) warns while they are used. */</ID>
+    <ID>MaxLineLength:NginxRegex.kt$NginxRegex$if (parent?.directiveName == "map" &amp;&amp; key.startsWith("~")) listOf(d.nameElement to if (key.startsWith("~*")) 2 else 1) else emptyList()</ID>
+    <ID>MaxLineLength:NginxRegexAnnotator.kt$NginxRegexAnnotator$// shortcut: Java's regex engine stands in for PCRE (same syntax for what configs use); PCRE-only constructs are skipped</ID>
+    <ID>MaxLineLength:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$"HTTP splitting: ${it.value} is URL-decoded and can carry a line break into the response; use \$request_uri"</ID>
+    <ID>MaxLineLength:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$"Host spoofing: \$http_host is whatever the client sent, \$host is validated against server_name"</ID>
+    <ID>MaxLineLength:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$"Security: ReDoS: a repeated group that itself repeats ('$re') can take exponential time on a crafted URL"</ID>
+    <ID>MaxLineLength:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$"path traversal: location '$loc' lacks the trailing slash its alias has, so '$loc../' reads the folder above '${args[0]}'"</ID>
+    <ID>MaxLineLength:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$Regex("""(?&lt;!\\)\.(?![*+?])""").containsMatchIn(re.substringAfter("://")) -&gt; "the unescaped '.' in '$re' also matches any character, e.g. examplexcom"</ID>
+    <ID>MaxLineLength:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$if</ID>
+    <ID>MaxLineLength:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$if (siblings.first { it.directiveName == "add_header" } != d || siblings.any { it.directiveName == "add_header_inherit" }) return null</ID>
+    <ID>MaxLineLength:NginxSecurityTest.kt$NginxSecurityTest$.</ID>
+    <ID>MaxLineLength:NginxSslRedirectIntention.kt$NginxSslRedirectIntention$"\n\n${i}server {\n$i listen 80;\n$i listen [::]:80;\n$i server_name $names;\n$i return 301 https://\$host\$request_uri;\n$i}"</ID>
+    <ID>MaxLineLength:NginxStructureViewFactory.kt$NginxStructureViewFactory$/** Outline of blocks (http, server, location, upstream...) plus the include, listen and server_name lines that identify them. */</ID>
+    <ID>MaxLineLength:NginxStructureViewFactory.kt$NginxStructureViewFactory.Element$is NginxDirective</ID>
+    <ID>MaxLineLength:NginxSymbolReference.kt$NginxSymbolReference$return super.handleElementRename(if (old.startsWith("\${")) "\${$name}" else if (old.startsWith("$")) "$$name" else newElementName)</ID>
+    <ID>MaxLineLength:NginxUpstreamCheckTest.kt$NginxUpstreamCheckTest$"&lt;weak_warning descr=\"Unknown upstream '$name': no upstream block with this name, so nginx will resolve '$name' as a host name\"&gt;"</ID>
+    <ID>MaxLineLength:NginxUrlAnnotator.kt$NginxUrlAnnotator$"Unknown upstream '$host': no upstream block with this name, so nginx will resolve '$host' as a host name"</ID>
+    <ID>MaxLineLength:NginxUrlAnnotator.kt$NginxUrlAnnotator$*</ID>
+    <ID>MaxLineLength:NginxUrlAnnotator.kt$NginxUrlAnnotator$error("proxy_pass cannot have URI part in location given by regular expression, or inside named location, or inside \"if\" statement, or inside \"limit_except\" block")</ID>
+    <ID>MaxLineLength:NginxUrlAnnotator.kt$NginxUrlAnnotator$if ('$' in url) return</ID>
+    <ID>MemberNameEqualsClassName:NginxCustomDirectives.kt$NginxCustomDirectives.Names$var names by stringSet()</ID>
+    <ID>NestedBlockDepth:NginxAnnotator.kt$NginxAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>NestedBlockDepth:NginxLexer.kt$NginxLexer$private fun luaEnd(from: Int): Int</ID>
+    <ID>NestedBlockDepth:NginxRegexAnnotator.kt$NginxRegexAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>ReturnCount:NginxAnnotator.kt$NginxAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>ReturnCount:NginxAnnotator.kt$NginxAnnotator$private fun checkVariable(e: PsiElement, text: String, range: TextRange, holder: AnnotationHolder)</ID>
+    <ID>ReturnCount:NginxAnnotator.kt$NginxAnnotator$private fun moveFix(d: NginxDirective, allowed: Set&lt;String&gt;): NginxFix?</ID>
+    <ID>ReturnCount:NginxBlock.kt$NginxBlock$override fun getSpacing(child1: Block?, child2: Block): Spacing?</ID>
+    <ID>ReturnCount:NginxConfTypeRefresher.kt$NginxConfTypeRefresher$override fun documentChanged(event: DocumentEvent)</ID>
+    <ID>ReturnCount:NginxConfigTestAnnotator.kt$NginxConfigTestAnnotator$override fun collectInformation(file: PsiFile): Input?</ID>
+    <ID>ReturnCount:NginxDeclarations.kt$NginxDeclarations$fun hostOf(url: String): String?</ID>
+    <ID>ReturnCount:NginxDocumentationProvider.kt$NginxDocumentationProvider$override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String?</ID>
+    <ID>ReturnCount:NginxDuplicateAnnotator.kt$NginxDuplicateAnnotator$private fun otherFileServers(d: NginxDirective): List&lt;NginxDirective&gt;</ID>
+    <ID>ReturnCount:NginxHeaders.kt$NginxHeaders$fun isHeaderName(e: PsiElement): Boolean</ID>
+    <ID>ReturnCount:NginxIncludes.kt$NginxIncludes$fun contextOf(file: PsiFile, seen: Set&lt;VirtualFile&gt; = emptySet()): String?</ID>
+    <ID>ReturnCount:NginxIncludes.kt$NginxIncludes$fun includers(file: PsiFile): List&lt;NginxDirective&gt;</ID>
+    <ID>ReturnCount:NginxInjector.kt$NginxInjector$override fun getLanguagesToInject(registrar: MultiHostRegistrar, context: PsiElement)</ID>
+    <ID>ReturnCount:NginxPaths.kt$NginxPaths$fun pathArg(d: NginxDirective): List&lt;PsiElement&gt;?</ID>
+    <ID>ReturnCount:NginxPaths.kt$NginxPaths$fun resolve(file: PsiFile, path: String): List&lt;VirtualFile&gt;</ID>
+    <ID>ReturnCount:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$private fun lostHeaders(d: NginxDirective, parent: NginxDirective?): Pair&lt;String, List&lt;NginxDirective&gt;&gt;?</ID>
+    <ID>ReturnCount:NginxSniffing.kt$fun isNginx(file: VirtualFile): Boolean</ID>
+    <ID>ReturnCount:NginxSslRedirectIntention.kt$NginxSslRedirectIntention$override fun target(at: NginxDirective, editor: Editor): NginxDirective?</ID>
+    <ID>ReturnCount:NginxUrlAnnotator.kt$NginxUrlAnnotator$override fun annotate(e: PsiElement, holder: AnnotationHolder)</ID>
+    <ID>ReturnCount:NginxUrlAnnotator.kt$NginxUrlAnnotator$private fun cannotHaveUri(d: NginxDirective): Boolean</ID>
+    <ID>ReturnCount:NginxUrlAnnotator.kt$NginxUrlAnnotator$private fun checkUpstream(d: NginxDirective, url: String, range: TextRange, holder: AnnotationHolder)</ID>
+    <ID>SpreadOperator:NginxDocumentationProvider.kt$NginxDocumentationProvider$( forms, it.doc, it.url, *listOfNotNull( it.default.takeIf(String::isNotEmpty) ?.let { d -&gt; "Default:" to "&lt;code&gt;${esc(it.name)} ${esc(d)};&lt;/code&gt;" }, it.contexts.takeIf(Set&lt;String&gt;::isNotEmpty) ?.let { c -&gt; "Context:" to c.joinToString(", ") { x -&gt; "&lt;code&gt;${esc(x)}&lt;/code&gt;" } }, ).toTypedArray(), )</ID>
+    <ID>UnusedParameter:NginxSecurityAnnotator.kt$NginxSecurityAnnotator$d: NginxDirective</ID>
+    <ID>VariableNaming:CorpusHighlightingTest.kt$CorpusHighlightingTest$private val ADVICE = listOf("Security: ", "deprecated", "obsolete", "SPDY")</ID>
+    <ID>VariableNaming:NginxCodeStyleSettings.kt$NginxCodeStyleSettings$/** Wrapped arguments (log_format strings...) line up under the last argument of the first line, as in the nginx docs. */ @JvmField var ALIGN_MULTILINE_ARGUMENTS = true</ID>
+    <ID>VariableNaming:NginxCodeStyleSettings.kt$NginxCodeStyleSettings$/** `listen 80;` / `server_name a.com;` — the layout of nginx's bundled nginx.conf. */ @JvmField var ALIGN_VALUES_IN_COLUMNS = false</ID>
+    <ID>WildcardImport:NginxBlock.kt$import com.intellij.formatting.*</ID>
+    <ID>WildcardImport:NginxCompletionContributor.kt$import com.intellij.codeInsight.completion.*</ID>
+    <ID>WildcardImport:NginxCustomDirectives.kt$import com.intellij.openapi.components.*</ID>
+    <ID>WildcardImport:NginxDocumentationProvider.kt$import com.intellij.lang.documentation.DocumentationMarkup.*</ID>
+    <ID>WildcardImport:NginxFileReference.kt$import com.intellij.psi.*</ID>
+    <ID>WildcardImport:NginxFormattingModelBuilder.kt$import com.intellij.formatting.*</ID>
+    <ID>WildcardImport:NginxLanguageCodeStyleSettingsProvider.kt$import com.intellij.psi.codeStyle.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -12,6 +12,37 @@ permissions:
   security-events: write
 
 jobs:
+  detekt:
+    runs-on: ubuntu-latest
+    env:
+      DETEKT_VERSION: 1.23.8
+      DETEKT_SHA256: 2ce2ff952e150baf28a29cda70a363b0340b3e81a55f43e51ec5edffc3d066c1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: 25
+      # The standalone CLI, not the Gradle plugin: detekt 1.23 is built against Kotlin 2.0 and this project uses 2.4.
+      - name: Download detekt
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/detekt-cli.jar" \
+            "https://github.com/detekt/detekt/releases/download/v$DETEKT_VERSION/detekt-cli-$DETEKT_VERSION-all.jar"
+          echo "$DETEKT_SHA256  $RUNNER_TEMP/detekt-cli.jar" | sha256sum -c -
+      # Any finding fails the job; findings that predate detekt are listed in config/detekt/baseline.xml.
+      - name: Run detekt
+        run: >
+          java -jar "$RUNNER_TEMP/detekt-cli.jar" --build-upon-default-config
+          --config config/detekt/detekt.yml --baseline config/detekt/baseline.xml
+          --input src/main/kotlin,src/test/kotlin
+          --base-path "$GITHUB_WORKSPACE" --report sarif:detekt.sarif
+      # Shows findings inline on the PR and in the Security tab.
+      - if: always() && hashFiles('detekt.sarif') != ''
+        uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          sarif_file: detekt.sarif
+          category: detekt
+
   codeql:
     runs-on: ubuntu-latest
     strategy:
