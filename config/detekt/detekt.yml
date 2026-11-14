@@ -1,0 +1,4 @@
+# detekt's default rules, run by the Code Quality workflow (see CONTRIBUTING.md).
+# Any finding fails the build; the ones that predate detekt are listed in baseline.xml.
+build:
+  maxIssues: 0
